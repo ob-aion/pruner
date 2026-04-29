@@ -1,0 +1,37 @@
+id: FC005
+slug: license-spdx
+title: "Frontmatter `license` if present must be a known SPDX identifier"
+severity: low
+category: governance
+owasp_ref: null
+owasp_ast: AST09
+pattern:
+  type: frontmatter-validator
+  field: license
+  optional: true
+  must_match_spdx: true
+rationale: |
+  AST09 Compliance Drift. SPDX consistency lets downstream tooling reason
+  about license compatibility. Common errors land in this rule: `Apache 2`,
+  `MIT License`, lower-case identifiers. The wrapper ships a small SPDX list
+  in `wrapper/src/pruner_wrapper/spdx.py` covering the top OSI-approved ids;
+  expand there if a legitimate identifier is missing.
+references:
+  - https://spdx.org/licenses/
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive:
+    - 'license: "Apache 2"'
+    - 'license: "MIT License"'
+  negative:
+    - 'license: "Apache-2.0"'
+    - 'license: "MIT"'
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+status: stable
+since: "0.1.0"

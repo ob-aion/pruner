@@ -1,0 +1,43 @@
+id: FC001
+slug: name-kebab-case
+title: "Skill name must be kebab-case, =64 chars, no reserved tokens"
+severity: high
+category: governance
+owasp_ref: LLM05
+owasp_ast: AST04
+pattern:
+  type: frontmatter-validator
+  field: name
+  must_match: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'
+  max_length: 64
+  forbid_tokens:
+    - anthropic
+    - claude
+    - openai
+    - cisco
+    - snyk
+rationale: |
+  Frontmatter `name` is the activation oracle for an agent skill. Reserved
+  publisher tokens enable typosquatting (AST04 Insecure Metadata, AST07
+  Cross-Platform Reuse). The 64-character cap and the kebab-case shape come
+  from the agentskills.io spec.
+references:
+  - https://owasp.org/www-project-agentic-skills-top-10/
+  - https://agentskills.io/
+fixtures:
+  positive:
+    - 'name: "Anthropic_Helper"'
+    - 'name: "code formatter"'
+    - 'name: "claude-helper"'
+  negative:
+    - 'name: "code-formatter"'
+    - 'name: "format-py"'
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+status: stable
+since: "0.1.0"

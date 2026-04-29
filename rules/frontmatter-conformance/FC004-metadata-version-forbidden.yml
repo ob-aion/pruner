@@ -1,0 +1,33 @@
+id: FC004
+slug: metadata-version-forbidden
+title: "`metadata.version` is forbidden (Coroboros house rule)"
+severity: low
+category: governance
+owasp_ref: null
+owasp_ast: AST04
+pattern:
+  type: frontmatter-validator
+  field_path: metadata.version
+  must_be_absent: true
+rationale: |
+  Coroboros agent-skills convention. Skill versioning is repo-tag driven, not
+  frontmatter-declared, to prevent drift between the declared and the shipped
+  version (AST04 / AST07). The signed Pruner attestation already carries the
+  release tag; declaring a version inside the frontmatter creates two sources
+  of truth that can disagree.
+references:
+  - https://github.com/coroboros/agent-skills
+fixtures:
+  positive:
+    - 'metadata: { version: "1.2.3" }'
+  negative:
+    - 'metadata: { author: coroboros }'
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+status: stable
+since: "0.1.0"

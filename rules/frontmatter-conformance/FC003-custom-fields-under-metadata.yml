@@ -1,0 +1,39 @@
+id: FC003
+slug: custom-fields-under-metadata
+title: "Custom frontmatter fields must live under `metadata:`"
+severity: medium
+category: governance
+owasp_ref: LLM05
+owasp_ast: AST04
+pattern:
+  type: frontmatter-validator
+  forbid_top_level_fields_outside:
+    - name
+    - description
+    - allowed-tools
+    - disable-model-invocation
+    - license
+    - version
+    - metadata
+rationale: |
+  The agentskills.io spec reserves the top-level shape of skill frontmatter.
+  Custom fields at the top level hide intent (AST04 Insecure Metadata) and
+  break tooling that walks the canonical schema. Place all custom data under
+  the `metadata:` mapping.
+references:
+  - https://agentskills.io/
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive:
+    - 'custom_field: "value"'
+  negative:
+    - 'metadata: { custom_field: "value" }'
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+status: stable
+since: "0.1.0"

@@ -1,0 +1,34 @@
+id: FC002
+slug: description-length
+title: "Frontmatter `description` must be 1-1024 chars"
+severity: medium
+category: governance
+owasp_ref: LLM05
+owasp_ast: AST04
+pattern:
+  type: frontmatter-validator
+  field: description
+  min_length: 1
+  max_length: 1024
+rationale: |
+  The agentskills.io spec caps `description` at 1024 characters. Empty or
+  oversized descriptions are an activation-oracle abuse vector (AST04). An
+  empty description means the skill activation is opaque; an oversized one
+  hides intent under noise.
+references:
+  - https://agentskills.io/
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive:
+    - 'description: ""'
+  negative:
+    - 'description: "Formats Python code with black."'
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+status: stable
+since: "0.1.0"
