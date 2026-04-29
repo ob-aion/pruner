@@ -1,0 +1,63 @@
+name: cisco-upstream-check
+on:
+  schedule:
+    - cron: '0 6 1 * *'   # 06:00 UTC on the 1st of each month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - id: probe
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          DRIFT_REASONS=()
+
+          REPO_JSON=$(gh api repos/cisco-ai-defense/skill-scanner --jq '{archived: .archived, license: .license.spdx_id}' 2>/dev/null)
+          IS_ARCHIVED=$(echo "${REPO_JSON}" | python3 -c 'import json,sys; print(json.load(sys.stdin)["archived"])')
+          LICENSE=$(echo "${REPO_JSON}" | python3 -c 'import json,sys; print(json.load(sys.stdin)["license"])')
+
+          if [ "${IS_ARCHIVED}" = "True" ]; then
+            DRIFT_REASONS+=("Upstream repository archived.")
+          fi
+          if [ "${LICENSE}" != "Apache-2.0" ]; then
+            DRIFT_REASONS+=("License changed from Apache-2.0 to ${LICENSE}.")
+          fi
+
+          LATEST=$(gh api repos/cisco-ai-defense/skill-scanner/releases/latest --jq '.published_at' 2>/dev/null || echo '')
+          if [ -n "${LATEST}" ]; then
+            AGE_DAYS=$(python3 -c "import datetime; ts=datetime.datetime.fromisoformat('${LATEST}'.replace('Z','+00:00')); now=datetime.datetime.now(datetime.timezone.utc); print((now - ts).days)")
+            if [ "${AGE_DAYS}" -gt 90 ]; then
+              DRIFT_REASONS+=("Latest release is ${AGE_DAYS} days old (>90).")
+            fi
+          fi
+
+          if [ ${#DRIFT_REASONS[@]} -gt 0 ]; then
+            BODY="Cisco upstream-drift probe flagged the following:%0A%0A"
+            for r in "${DRIFT_REASONS[@]}"; do
+              BODY="${BODY}- ${r}%0A"
+            done
+            BODY="${BODY}%0A_The Loom is fraying. Upstream check required._"
+            echo "drift_body=${BODY}" >> "$GITHUB_OUTPUT"
+            echo "drifted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "drifted=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: ${{ steps.probe.outputs.drifted == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "upstream-drift: cisco-ai-skill-scanner" \
+            --body "${{ steps.probe.outputs.drift_body }}" \
+            --label upstream-drift

@@ -1,0 +1,184 @@
+name: 'Pruner'
+description: "Coroboros's attestation chain for agent skill repositories. Variants don't ship."
+author: 'Coroboros'
+branding:
+  icon: 'shield'
+  color: 'black'
+
+inputs:
+  fail-on:
+    description: 'Severity threshold for failing the workflow: critical | high | medium | low | never'
+    required: false
+    default: 'critical'
+  skill-pattern:
+    description: 'Glob for skill manifests (default: skills/*/SKILL.md)'
+    required: false
+    default: 'skills/*/SKILL.md'
+  rules-path:
+    description: 'Path to the Coroboros pack root (default: $GITHUB_ACTION_PATH/rules)'
+    required: false
+    default: ''
+  report-output:
+    description: 'Directory where Pruner writes the report bundle'
+    required: false
+    default: './.pruner'
+  scan-prompt-defense-posture:
+    description: 'Activate the PD pack (off by default)'
+    required: false
+    default: 'false'
+  with-snyk:
+    description: 'Run snyk-agent-scan as opt-in second opinion (requires SNYK_TOKEN)'
+    required: false
+    default: 'false'
+  python-version:
+    description: 'Python version for the wrapper venv'
+    required: false
+    default: '3.12'
+  target-path:
+    description: 'Path to scan (default: . current directory of consumer repo)'
+    required: false
+    default: '.'
+
+outputs:
+  report:
+    description: 'Path to the composed report-v1.json'
+    value: ${{ steps.compose-report.outputs.report }}
+  grade:
+    description: 'Overall grade (A-F)'
+    value: ${{ steps.compose-report.outputs.grade }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: setup-python
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - id: setup-cisco
+      shell: bash
+      run: |
+        set -euo pipefail
+        export PRUNER_CISCO_VENV="${RUNNER_TEMP:-/tmp}/cisco-venv"
+        bash "${GITHUB_ACTION_PATH}/scripts/setup-cisco.sh"
+        mkdir -p "${{ inputs.report-output }}"
+        echo "PRUNER_CISCO_VENV=${PRUNER_CISCO_VENV}" >> "$GITHUB_ENV"
+        echo "${PRUNER_CISCO_VENV}/bin" >> "$GITHUB_PATH"
+
+    - id: setup-wrapper
+      shell: bash
+      run: |
+        set -euo pipefail
+        python -m pip install --quiet --upgrade pip
+        python -m pip install --quiet "${GITHUB_ACTION_PATH}/wrapper"
+
+    - id: cisco-run
+      shell: bash
+      run: |
+        set -euo pipefail
+        skill-scanner scan-all "${{ inputs.target-path }}" \
+          --recursive \
+          --format sarif \
+          --output-sarif "${{ inputs.report-output }}/cisco.sarif" || true
+        if [ ! -s "${{ inputs.report-output }}/cisco.sarif" ]; then
+          echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"cisco-ai-skill-scanner","version":"2.0.9"}},"results":[]}]}' > "${{ inputs.report-output }}/cisco.sarif"
+        fi
+
+    - id: coroboros-pack-run
+      shell: bash
+      run: |
+        set -euo pipefail
+        RULES_PATH='${{ inputs.rules-path }}'
+        if [ -z "${RULES_PATH}" ]; then
+          RULES_PATH="${GITHUB_ACTION_PATH}/rules"
+        fi
+        ALLOWLIST_ARG=()
+        [ -f .pruner-ignore.yml ] && ALLOWLIST_ARG=(--allowlist .pruner-ignore.yml)
+        POLICY_ARG=()
+        [ -f .pruner-policy.yml ] && POLICY_ARG=(--policy .pruner-policy.yml)
+        pruner scan "${{ inputs.target-path }}" \
+          --rules "${RULES_PATH}" \
+          --without-cisco \
+          --without-snyk \
+          --format sarif \
+          --output "${{ inputs.report-output }}/coroboros.sarif" \
+          --skill-pattern "${{ inputs.skill-pattern }}" \
+          "${ALLOWLIST_ARG[@]}" \
+          "${POLICY_ARG[@]}" \
+          --target-repo "${GITHUB_REPOSITORY:-<local>}"
+
+    - id: gitleaks-run
+      uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7  # v2.3.9
+      continue-on-error: true
+      env:
+        GITLEAKS_ENABLE_COMMENTS: 'false'
+        GITLEAKS_ENABLE_UPLOAD_ARTIFACT: 'true'
+
+    - id: actionlint-run
+      shell: bash
+      continue-on-error: true
+      run: |
+        set -euo pipefail
+        if [ -d "${{ inputs.target-path }}/.github/workflows" ]; then
+          curl -sSL "https://raw.githubusercontent.com/rhysd/actionlint/914e7df21a07ef503a81201c76d2b11c789d3fca/scripts/download-actionlint.bash" \
+            | bash -s -- 1.7.12
+          ./actionlint -format '{{json .}}' "${{ inputs.target-path }}/.github/workflows" \
+            > "${{ inputs.report-output }}/actionlint.json" || true
+        fi
+
+    - id: snyk-run
+      if: ${{ inputs.with-snyk == 'true' && env.SNYK_TOKEN != '' }}
+      shell: bash
+      continue-on-error: true
+      run: |
+        set -euo pipefail
+        if command -v snyk >/dev/null 2>&1; then
+          snyk agent-scan "${{ inputs.target-path }}" \
+            --sarif-file-output="${{ inputs.report-output }}/snyk.sarif" || true
+        fi
+
+    - id: compose-report
+      shell: bash
+      run: |
+        set -euo pipefail
+        ALLOWLIST_ARG=()
+        [ -f .pruner-ignore.yml ] && ALLOWLIST_ARG=(--allowlist .pruner-ignore.yml)
+        POLICY_ARG=()
+        [ -f .pruner-policy.yml ] && POLICY_ARG=(--policy .pruner-policy.yml)
+        INPUTS=()
+        for f in "${{ inputs.report-output }}"/*.sarif; do
+          [ -e "$f" ] && INPUTS+=("$f")
+        done
+        pruner compose \
+          --inputs "${INPUTS[@]}" \
+          --output "${{ inputs.report-output }}/report.json" \
+          "${ALLOWLIST_ARG[@]}" \
+          "${POLICY_ARG[@]}" \
+          --target-repo "${GITHUB_REPOSITORY:-<local>}" \
+          --target-commit "${GITHUB_SHA:-}"
+        REPORT="${{ inputs.report-output }}/report.json"
+        echo "report=${REPORT}" >> "$GITHUB_OUTPUT"
+        GRADE=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['summary']['grade'])" "${REPORT}")
+        echo "grade=${GRADE}" >> "$GITHUB_OUTPUT"
+
+    - id: emit-badge
+      shell: bash
+      run: |
+        set -euo pipefail
+        pruner badge \
+          --report "${{ inputs.report-output }}/report.json" \
+          --output "${{ inputs.report-output }}/badge.svg"
+
+    - id: upload-sarif
+      uses: github/codeql-action/upload-sarif@865f5f5c36632f18690a3d569fa0a764f2da0c3e  # v3
+      if: ${{ always() }}
+      with:
+        sarif_file: ${{ inputs.report-output }}/coroboros.sarif
+
+    - id: gate
+      shell: bash
+      run: |
+        set -euo pipefail
+        pruner gate \
+          --report "${{ inputs.report-output }}/report.json" \
+          --fail-on "${{ inputs.fail-on }}"

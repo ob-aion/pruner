@@ -1,0 +1,31 @@
+name: self-scan
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  pruner-self-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - id: scan
+        uses: ./
+        with:
+          fail-on: critical
+          target-path: '.'
+          report-output: ./.pruner
+
+      - if: ${{ always() }}
+        name: Upload report bundle
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4  # v5
+        with:
+          name: pruner-self-scan-report
+          path: .pruner/
+          retention-days: 14
