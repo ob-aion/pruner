@@ -1,0 +1,83 @@
+name: release
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag (e.g. 0.1.0)'
+        required: true
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  security-events: write
+
+jobs:
+  build-and-attest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tag
+        id: tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            REF="${GITHUB_REF#refs/tags/}"
+          else
+            REF="${{ github.event.inputs.tag }}"
+          fi
+          echo "tag=${REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Self-scan against the tagged ref
+        id: scan
+        uses: ./
+        with:
+          fail-on: critical
+          target-path: '.'
+          report-output: ./.pruner
+
+      - name: Generate SBOM (CycloneDX)
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610  # v0.24.0
+        with:
+          format: cyclonedx-json
+          artifact-name: sbom.cdx.json
+          output-file: ./.pruner/sbom.cdx.json
+          path: .
+
+      - name: Bundle report
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/publish-report.sh ./.pruner
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32  # v4.1.0
+        with:
+          subject-path: ./.pruner/pruner-report.zip
+
+      - name: Attest SBOM
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e  # v4.1.0
+        with:
+          subject-path: ./.pruner/pruner-report.zip
+          sbom-path: ./.pruner/sbom.cdx.json
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda  # v3.0.0
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.tag }}
+          files: |
+            ./.pruner/pruner-report.zip
+            ./.pruner/badge.svg
+            ./.pruner/sbom.cdx.json
+            ./.pruner/report.json
+            ./.pruner/coroboros.sarif
+          draft: false
+          prerelease: false
