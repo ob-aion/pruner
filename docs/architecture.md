@@ -4,11 +4,11 @@
 
 `action.yml` (composite, SHA-pinned) → `wrapper/` Python package → Cisco subprocess + Coroboros pack + gitleaks + actionlint → `compose-report` → `report-v1.json` + SARIF + SBOM + SLSA provenance → `actions/attest-*` → release bundle + badge.
 
-## Three briques
+## Three stages
 
 ```
 +------------------------------+   +------------------------------+   +------------------------------+
-|  Brique 1: Detection         |   |  Brique 2: Coroboros pack    |   |  Brique 3: Attestation       |
+|  Stage 1: Detection          |   |  Stage 2: Coroboros pack     |   |  Stage 3: Attestation        |
 |  ------------------          |   |  -----------------------     |   |  -----------------------     |
 |  cisco-ai-skill-scanner      |   |  12 default-on rules:        |   |  SBOM via syft               |
 |  (pinned, deterministic)     |+->|    FC001-FC005 (frontmatter) |+->|  attest-build-provenance     |

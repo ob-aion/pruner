@@ -50,7 +50,7 @@ Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Cor
 | MCP server CVE references (CVE-2025-53107 etc.) | partial — Snyk has the strongest coverage here | flag-only | full MCP-runtime probe (out of v0.1 scope) |
 | Agent-side red teaming (garak / promptfoo / PyRIT) | n/a | n/a | full live-LLM probing (deferred to post-1.0 — needs a harness) |
 | LLM-call-from-the-scanner | Cisco `--use-llm` opt-in upstream | Pruner stays deterministic at 0.1.0 | — |
-| EU AI Act regulatory signal | n/a | descriptive mapping to OWASP AST/LLM | prescriptive certification (we attest, we do not certify) |
+| EU AI Act regulatory signal | n/a | descriptive mapping to OWASP AST/LLM | prescriptive certification (Pruner attests; certification is out of scope) |
 
 ## Footnotes
 

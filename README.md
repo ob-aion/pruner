@@ -66,7 +66,7 @@ Templates for minimal and full integrations live in [`templates/`](./templates/)
 
 ## How it works
 
-Three briques, in sequence:
+Three stages, in sequence:
 
 1. **Detection.** The composite action installs a SHA-pinned `cisco-ai-skill-scanner` in deterministic mode (no LLM keys required), runs `gitleaks` for secrets, and `actionlint` for the audited repo's own workflows.
 2. **Coroboros policy pack.** Twelve default-on rules — frontmatter conformance (FC001–FC005), Unicode-Tag arsenal (PI-UNI-001..004), supply-chain hygiene (PI-PEP723-001, PI-IDFILE-001, PI-MDIMG-001). Twelve opt-in PD rules for prompt-defense posture on generalist-agent prompt files.

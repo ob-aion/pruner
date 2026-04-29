@@ -10,7 +10,7 @@ Pruner's value is the **trust artefact** — a portable signed attestation chain
 
 | Property | Why it matters |
 |---|---|
-| **Apache-2.0** | Permissive; we can wrap, fork, and redistribute. |
+| **Apache-2.0** | Permissive; allows wrapping, forking, and redistribution. |
 | **Fully local** | No `SNYK_TOKEN`-style cloud uplink. Pruner's air-gap thesis survives. |
 | **Multi-pass** | 13-pass static + bytecode + LLM-as-judge meta + behavioral dataflow + YARA + homoglyph + Office macros. Broader than any single-pass tool. |
 | **Meta-analyzer** | Internal FP-reduction stage with documented suppression discipline. |
@@ -59,7 +59,7 @@ Pruner does not replace the Cisco engine reflexively. Triggers for a swap:
 
 ### Swap procedure
 
-1. **Fork.** `gh repo fork cisco-ai-defense/skill-scanner` at the last good SHA. Apache-2.0 allows redistribution; we just need to maintain attribution and avoid trademark uses.
+1. **Fork.** `gh repo fork cisco-ai-defense/skill-scanner` at the last good SHA. Apache-2.0 allows redistribution under attribution; trademark use is forbidden.
 2. **Replace the engine entry in `wrapper/pyproject.toml` and `wrapper/CISCO_PIN.md`.** The wrapper's `cisco_runner.py` invokes the engine via subprocess; the surface is small.
 3. **Or substitute with `snyk/agent-scan`.** Apache-2.0 CLI, similar SARIF output. Trade-off: requires `SNYK_TOKEN` and uplinks scan content to Snyk cloud — explicit consumer disclosure required. Document the trade in the README and the report bundle.
 4. **Re-run dogfood FP-audit.** Update `docs/fp-audit.md` with new-engine findings classification.
@@ -67,8 +67,8 @@ Pruner does not replace the Cisco engine reflexively. Triggers for a swap:
 
 The Coroboros policy pack runs after the engine and is engine-agnostic. Swapping the detection backend does not require rewriting any of the 24 rules.
 
-## What we did not pick
+## Considered alternatives
 
-- **`snyk/agent-scan`.** Apache-2.0 CLI and excellent toxic-flow analysis, but cloud-uplink mandatory (`SNYK_TOKEN`) breaks the air-gap thesis. Available as opt-in second opinion in the composite action when `SNYK_TOKEN` is present (`with-snyk: true`).
-- **`vercel-labs/skills` audit.** Three-partner aggregated audit, but install-time placement (server-side, bypassed by direct git clone). Complementary, not an engine choice.
-- **Home-grown engine.** Rejected: maintenance tax of a 50+ rule injection corpus, day-1 trust deficit against an unproven scanner, contested differentiation in a space Cisco and Snyk already cover.
+- **`snyk/agent-scan`.** Apache-2.0 CLI with strong toxic-flow analysis. Cloud-uplink mandatory (`SNYK_TOKEN`) breaks the air-gap thesis. Available as opt-in second opinion in the composite action when `SNYK_TOKEN` is present (`with-snyk: true`).
+- **`vercel-labs/skills` audit.** Three-partner aggregated audit. Install-time placement is server-side, bypassed by direct git clone. Complementary, not an engine choice.
+- **Home-grown engine.** Rejected: maintenance tax of a 50+ rule injection corpus, day-one trust deficit against an unproven scanner, contested differentiation in a space Cisco and Snyk already cover.

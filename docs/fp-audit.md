@@ -33,7 +33,7 @@ Living document. Every release appends a dated section classifying any new findi
 | false-positive | 0 |
 | **Total** | **42** |
 
-Zero hard FPs. The fifteen severity-inflation findings are FC005 license-non-SPDX hits on Anthropic skills that declare commercial / proprietary licenses (`Commercial`, `Proprietary`) — the rule fires correctly per the rule, but the Anthropic licensing convention is not OSS-SPDX and the surface is intentional. We surface them at `low` (the rule severity) and call them inflated relative to their security signal, not a defect to fix.
+Zero hard FPs. The fifteen severity-inflation findings are FC005 license-non-SPDX hits on Anthropic skills that declare commercial / proprietary licenses (`Commercial`, `Proprietary`) — the rule fires correctly per spec, but the Anthropic licensing convention is not OSS-SPDX and the surface is intentional. The findings stay at `low` (the rule severity); inflated relative to their security signal, not a defect to fix.
 
 ### `coroboros/agent-skills` — 20 findings
 
