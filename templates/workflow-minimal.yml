@@ -1,0 +1,17 @@
+name: Pruner
+on:
+  pull_request:
+  push:
+    tags: ['[0-9]+.[0-9]+.[0-9]+']
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+  attestations: write
+
+jobs:
+  audit:
+    uses: coroboros/pruner/.github/workflows/reusable-full-scan.yml@0.1.0
+    with:
+      fail-on: critical

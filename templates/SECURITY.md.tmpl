@@ -1,0 +1,40 @@
+# Security Policy
+
+## Reporting a vulnerability
+
+Open a private vulnerability report at <https://github.com/<OWNER>/<REPO>/security/advisories/new>. Do not file a public issue.
+
+**SLA**
+
+- Acknowledge: 72 hours
+- Triage: 7 days
+- Fix critical: 30 days
+- Fix high: 90 days
+
+## Source-side audit
+
+This repository runs [Pruner](https://github.com/coroboros/pruner) on every pull request and tag. The signed report bundle lives on the matching GitHub release. Verify with:
+
+```bash
+gh release download <tag> --repo <OWNER>/<REPO> --pattern 'pruner-report.zip'
+gh attestation verify pruner-report.zip --owner <OWNER>
+```
+
+The report covers:
+
+- Detection via `cisco-ai-skill-scanner` (Apache-2.0, fully local).
+- Coroboros policy pack — frontmatter conformance, Unicode-Tag arsenal, supply-chain hygiene.
+- Secrets via `gitleaks`.
+- Workflow safety via `actionlint`.
+- SLSA build provenance via `actions/attest-build-provenance`.
+- CycloneDX SBOM signed via `actions/attest-sbom`.
+
+Coverage matrix: <https://github.com/coroboros/pruner/blob/main/docs/coverage-matrix.md>.
+
+## Out of scope
+
+Pruner audits the published artefacts statically. Runtime monitoring, sandboxed execution, and consumer-machine behavior are out of scope.
+
+## Disclosure history
+
+(none yet)

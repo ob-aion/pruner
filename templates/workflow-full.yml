@@ -1,0 +1,25 @@
+name: Pruner — Security Audit
+on:
+  pull_request:
+  push:
+    tags: ['[0-9]+.[0-9]+.[0-9]+']
+  schedule:
+    - cron: '0 6 * * 1'   # weekly Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+  attestations: write
+
+jobs:
+  audit:
+    uses: coroboros/pruner/.github/workflows/reusable-full-scan.yml@0.1.0
+    with:
+      fail-on: medium
+      skill-pattern: 'skills/*/SKILL.md'
+      report-output: ./.pruner
+      scan-prompt-defense-posture: false
+      with-snyk: false
+    secrets: inherit

@@ -1,0 +1,14 @@
+# Default ownership
+*                                       @ob-aion
+
+# Engine pin requires lead-maintainer review
+wrapper/CISCO_PIN.md                    @ob-aion
+wrapper/pyproject.toml                  @ob-aion
+
+# Workflow changes require lead-maintainer review
+.github/workflows/                      @ob-aion
+action.yml                              @ob-aion
+
+# Rule pack
+rules/                                  @ob-aion
+schema/                                 @ob-aion
