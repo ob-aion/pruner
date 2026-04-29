@@ -1,0 +1,9 @@
+# gitleaks suppressions — every entry is a fingerprint with mandatory justification.
+# Format: <commit-sha>:<file>:<rule-id>:<line> followed by a comment.
+
+# False positive: the test_policy.py fixture declares a Python keyword arg
+# `severity_declared="..."` adjacent to the literal `secrets` string. The
+# `generic-api-key` rule pattern-matches the substring as if it were an API
+# key assignment. The captured "secret" is literally the string
+# `severity_declared=`. No actual credential is present.
+cf2c63809201e8b1f8a34e9aff4256c1d7242456:wrapper/tests/test_policy.py:generic-api-key:69
