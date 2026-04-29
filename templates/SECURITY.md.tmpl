@@ -13,7 +13,7 @@ Open a private vulnerability report at <https://github.com/<OWNER>/<REPO>/securi
 
 ## Source-side audit
 
-This repository runs [Pruner](https://github.com/coroboros/pruner) on every pull request and tag. The signed report bundle lives on the matching GitHub release. Verify with:
+This repository runs [Pruner](https://github.com/ob-aion/pruner) on every pull request and tag. The signed report bundle lives on the matching GitHub release. Verify with:
 
 ```bash
 gh release download <tag> --repo <OWNER>/<REPO> --pattern 'pruner-report.zip'
@@ -29,7 +29,7 @@ The report covers:
 - SLSA build provenance via `actions/attest-build-provenance`.
 - CycloneDX SBOM signed via `actions/attest-sbom`.
 
-Coverage matrix: <https://github.com/coroboros/pruner/blob/main/docs/coverage-matrix.md>.
+Coverage matrix: <https://github.com/ob-aion/pruner/blob/main/docs/coverage-matrix.md>.
 
 ## Out of scope
 

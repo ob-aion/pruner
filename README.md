@@ -7,11 +7,11 @@
 
 Coroboros's attestation chain for agent skill repositories.
 
-[![latest](https://img.shields.io/github/v/release/coroboros/pruner?style=flat-square&label=latest&color=000000)](https://github.com/coroboros/pruner/releases)
-[![self-scan](https://img.shields.io/github/actions/workflow/status/coroboros/pruner/self-scan.yml?branch=main&style=flat-square&label=self-scan&color=000000)](https://github.com/coroboros/pruner/actions/workflows/self-scan.yml)
-[![branch](https://img.shields.io/badge/branch-experimental-000000?style=flat-square)](https://github.com/coroboros/pruner)
+[![latest](https://img.shields.io/github/v/release/ob-aion/pruner?style=flat-square&label=latest&color=000000)](https://github.com/ob-aion/pruner/releases)
+[![self-scan](https://img.shields.io/github/actions/workflow/status/ob-aion/pruner/self-scan.yml?branch=main&style=flat-square&label=self-scan&color=000000)](https://github.com/ob-aion/pruner/actions/workflows/self-scan.yml)
+[![branch](https://img.shields.io/badge/branch-experimental-000000?style=flat-square)](https://github.com/ob-aion/pruner)
 [![license](https://img.shields.io/badge/license-Apache--2.0-000000?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0)
-[![stars](https://img.shields.io/github/stars/coroboros/pruner?style=flat-square&label=stars&color=000000)](https://github.com/coroboros/pruner)
+[![stars](https://img.shields.io/github/stars/ob-aion/pruner?style=flat-square&label=stars&color=000000)](https://github.com/ob-aion/pruner)
 [![skills](https://img.shields.io/badge/skills-000000?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2IiBmaWxsPSJ3aGl0ZSI+PHBvbHlnb24gcG9pbnRzPSI4LDAgMTAsNiAxNiw4IDEwLDEwIDgsMTYgNiwxMCAwLDggNiw2Ii8+PC9zdmc+)](https://github.com/coroboros/agent-skills)
 [![coroboros.com](https://img.shields.io/badge/coroboros.com-000000?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48cGF0aCBkPSJNMiAxMmgyME0xMiAyYTE1LjMgMTUuMyAwIDAgMSA0IDEwIDE1LjMgMTUuMyAwIDAgMS00IDEwIDE1LjMgMTUuMyAwIDAgMS00LTEwIDE1LjMgMTUuMyAwIDAgMSA0LTEweiIvPjwvc3ZnPg==)](https://coroboros.com)
 
@@ -57,7 +57,7 @@ permissions:
 
 jobs:
   audit:
-    uses: coroboros/pruner/.github/workflows/reusable-full-scan.yml@0.1.0
+    uses: ob-aion/pruner/.github/workflows/reusable-full-scan.yml@0.1.1
     with:
       fail-on: medium
       skill-pattern: 'skills/*/SKILL.md'
@@ -77,7 +77,7 @@ Architecture deep-dive: [`docs/architecture.md`](./docs/architecture.md). Why Ci
 
 ## Snyk second opinion
 
-Optional. `coroboros/pruner` accepts `snyk/agent-scan` as a second-opinion runner — set `with-snyk: true` and provide `SNYK_TOKEN`. Findings land in the report's `tools[]` block with `mode: second-opinion, blocking: false`.
+Optional. `ob-aion/pruner` accepts `snyk/agent-scan` as a second-opinion runner — set `with-snyk: true` and provide `SNYK_TOKEN`. Findings land in the report's `tools[]` block with `mode: second-opinion, blocking: false`.
 
 Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap default. Skip for private or regulated content. Without a token, the step is silently skipped; the workflow does not fail. Setup walkthrough: [`docs/consumer-integration.md#snyk-second-opinion`](./docs/consumer-integration.md#snyk-second-opinion).
 
@@ -90,7 +90,7 @@ Honest matrix of what Cisco catches × what the Coroboros pack adds × what noth
 Every release emits `pruner-report.zip` to its GitHub release page, containing `report-v1.json`, the aggregated SARIF, the CycloneDX SBOM, the OpenSSF Scorecard JSON, the in-toto attestation, and the badge SVG. Verification:
 
 ```bash
-gh attestation verify pruner-report.zip --owner coroboros
+gh attestation verify pruner-report.zip --owner ob-aion
 ```
 
 Walkthrough: [`docs/verify-a-report.md`](./docs/verify-a-report.md).

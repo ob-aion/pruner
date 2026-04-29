@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pruner-wrapper"
-version = "0.1.0"
+version = "0.1.1"
 description = "Pruner — Coroboros's attestation chain for agent skill repositories. Wrapper module."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -58,10 +58,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/coroboros/pruner"
-Repository = "https://github.com/coroboros/pruner"
-Issues = "https://github.com/coroboros/pruner/issues"
-Documentation = "https://github.com/coroboros/pruner/blob/main/README.md"
+Homepage = "https://github.com/ob-aion/pruner"
+Repository = "https://github.com/ob-aion/pruner"
+Issues = "https://github.com/ob-aion/pruner/issues"
+Documentation = "https://github.com/ob-aion/pruner/blob/main/README.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -12,6 +12,6 @@ permissions:
 
 jobs:
   audit:
-    uses: coroboros/pruner/.github/workflows/reusable-full-scan.yml@0.1.0
+    uses: ob-aion/pruner/.github/workflows/reusable-full-scan.yml@0.1.1
     with:
       fail-on: critical

@@ -11,7 +11,7 @@ Thanks for considering a contribution. Pruner is small, opinionated, and maintai
 ## Setup
 
 ```bash
-git clone https://github.com/coroboros/pruner.git
+git clone https://github.com/ob-aion/pruner.git
 cd pruner
 python3 -m venv .venv
 source .venv/bin/activate

@@ -45,7 +45,7 @@ def findings_to_sarif(
                     "driver": {
                         "name": tool_name,
                         "version": tool_version,
-                        "informationUri": "https://github.com/coroboros/pruner",
+                        "informationUri": "https://github.com/ob-aion/pruner",
                         "rules": rules or [],
                     }
                 },

@@ -35,7 +35,7 @@ Pruner scans Pruner on every push (`.github/workflows/self-scan.yml`). A failing
 
 ## Security disclosure
 
-Private reports at <https://github.com/coroboros/pruner/security/advisories/new>. SLA in [`SECURITY.md`](./SECURITY.md).
+Private reports at <https://github.com/ob-aion/pruner/security/advisories/new>. SLA in [`SECURITY.md`](./SECURITY.md).
 
 ## Code of conduct
 

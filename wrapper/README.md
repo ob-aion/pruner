@@ -1,6 +1,6 @@
 # pruner-wrapper
 
-The Python module behind the `pruner` CLI and the `coroboros/pruner` composite action. Thin orchestrator over the Cisco engine plus the Coroboros policy pack engine.
+The Python module behind the `pruner` CLI and the `ob-aion/pruner` composite action. Thin orchestrator over the Cisco engine plus the Coroboros policy pack engine.
 
 ## Install
 

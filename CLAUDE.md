@@ -4,7 +4,7 @@ For agents (Claude Code, Cursor, Copilot, Codex) and humans working in this repo
 
 ## What this is
 
-`coroboros/pruner` ships a composite GitHub Action that audits agent skill repositories on the publishing side and emits a signed attestation. Engine delegated to `cisco-ai-defense/skill-scanner`. Policy pack and attestation chain Coroboros-owned. License Apache-2.0.
+`ob-aion/pruner` ships a composite GitHub Action that audits agent skill repositories on the publishing side and emits a signed attestation. Engine delegated to `cisco-ai-defense/skill-scanner`. Policy pack and attestation chain Coroboros-owned. License Apache-2.0.
 
 ## Architecture (one-liner)
 

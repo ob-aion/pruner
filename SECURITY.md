@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Open a private vulnerability report at <https://github.com/coroboros/pruner/security/advisories/new>. Do not file a public issue. Do not email.
+Open a private vulnerability report at <https://github.com/ob-aion/pruner/security/advisories/new>. Do not file a public issue. Do not email.
 
 **SLA**
 
@@ -25,4 +25,4 @@ The composite action runs entirely on GitHub-hosted or self-hosted runners belon
 
 ## Disclosure history
 
-None at v0.1.0.
+None at v0.1.1.

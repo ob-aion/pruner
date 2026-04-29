@@ -1,8 +1,21 @@
 # Changelog
 
+## v0.1.1 - 29/04/2026
+
+Maintenance release fixing CI issues that blocked 0.1.0 from attaching the signed attestation bundle to the release.
+
+- Repo transferred from `coroboros/pruner` to `ob-aion/pruner` to bypass the `gitleaks-action` paid-license requirement for org-owned repositories.
+- Replaced `gitleaks/gitleaks-action@v2.3.x` with the gitleaks CLI fetched directly from upstream releases (MIT, no license check). SHA256-pinned to `v8.30.1`.
+- Install `snyk` binary via `npm install -g snyk` when `with-snyk: true && SNYK_TOKEN != ''`. Eliminates the silent no-op for consumers using the reusable workflow.
+- Tightened `release.yml` permissions per OpenSSF Scorecard — top-level read-only, write declared at job-level only.
+- `scorecard.yml` no longer triggers on tag pushes — `ossf/scorecard-action` only supports the default branch.
+- README and `docs/consumer-integration.md` document the Snyk second-opinion opt-in path explicitly.
+
+0.1.1 is the first release with the signed attestation bundle and badge SVG attached to the GitHub release.
+
 ## v0.1.0 - 29/04/2026
 
-Initial release of `coroboros/pruner` — Coroboros's attestation chain for agent skill repositories.
+Initial release of Pruner — Coroboros's attestation chain for agent skill repositories.
 
 - Composite GitHub Action wrapping `cisco-ai-skill-scanner@2.0.9` (Apache-2.0, fully local) plus `gitleaks` for secrets and `actionlint` for the audited repo's workflows. Every external `uses:` SHA-pinned.
 - Coroboros policy pack — 12 default-on rules: frontmatter conformance (FC001-FC005), Unicode-Tag arsenal (PI-UNI-001..004), supply-chain hygiene (PI-PEP723-001, PI-IDFILE-001, PI-MDIMG-001).

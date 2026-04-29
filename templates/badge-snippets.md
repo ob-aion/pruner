@@ -38,5 +38,5 @@ gh release download <tag> --repo <OWNER>/<REPO> --pattern 'pruner-report.zip'
 gh attestation verify pruner-report.zip --owner <OWNER>
 ```
 
-Walkthrough: <https://github.com/coroboros/pruner/blob/main/docs/verify-a-report.md>.
+Walkthrough: <https://github.com/ob-aion/pruner/blob/main/docs/verify-a-report.md>.
 ````

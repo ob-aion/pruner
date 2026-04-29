@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   audit:
-    uses: coroboros/pruner/.github/workflows/reusable-full-scan.yml@0.1.0
+    uses: ob-aion/pruner/.github/workflows/reusable-full-scan.yml@0.1.1
     with:
       fail-on: medium
       skill-pattern: 'skills/*/SKILL.md'
@@ -95,7 +95,7 @@ Add to your skill-author checklist:
 
 ## Snyk second opinion
 
-Optional. `coroboros/pruner` accepts `snyk/agent-scan` as a second-opinion runner; off by default.
+Optional. `ob-aion/pruner` accepts `snyk/agent-scan` as a second-opinion runner; off by default.
 
 Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap default. Use only for content not subject to private or regulated handling. Background on the trade-off: [`docs/why-cisco.md#considered-alternatives`](./why-cisco.md#considered-alternatives).
 
@@ -108,7 +108,7 @@ Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap de
 ```yaml
 jobs:
   audit:
-    uses: coroboros/pruner/.github/workflows/reusable-full-scan.yml@0.1.0
+    uses: ob-aion/pruner/.github/workflows/reusable-full-scan.yml@0.1.1
     with:
       fail-on: medium
       with-snyk: true
@@ -134,7 +134,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - run: npm install -g snyk
-      - uses: coroboros/pruner@0.1.0
+      - uses: ob-aion/pruner@0.1.1
         with:
           fail-on: medium
           with-snyk: true
