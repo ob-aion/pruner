@@ -48,7 +48,7 @@ def test_compose_invokes_and_writes(tmp_path: Path, repo_root: Path) -> None:
         "version": "2.1.0",
         "runs": [
             {
-                "tool": {"driver": {"name": "pruner-wrapper", "version": "0.1.2"}},
+                "tool": {"driver": {"name": "pruner-wrapper", "version": "0.1.3"}},
                 "results": [],
             }
         ],

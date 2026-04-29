@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.1.3 - 29/04/2026
+
+Patch release fixing the gate-step exit-code interpretation in the composite action and finishing the OpenSSF Scorecard permission-tightening pass.
+
+- **Composite gate step now treats `pruner gate` exit code 1 as pass.** Per the CLI spec, exit 1 means findings exist but none above the configured threshold (informational signal). The composite previously propagated exit 1 as a workflow failure, which made every consumer with non-critical findings see their CI fail unexpectedly. Exit 2 (above threshold) and exit 3 (internal error) still fail the workflow.
+- **Workflow permissions tightened** on `self-scan.yml`, `scorecard.yml`, and `cisco-upstream-check.yml`: top-level `contents: read`, write declared at job level only. Mirrors the change `release.yml` shipped in 0.1.1.
+
+0.1.3 is the first release pipeline that actually attaches the signed bundle to the GitHub release page; 0.1.0 / 0.1.1 / 0.1.2 release pages are deleted (tags retained as immutable history).
+
 ## v0.1.2 - 29/04/2026
 
 Suppresses a gitleaks false positive that blocked the 0.1.1 release pipeline. First release with the signed attestation bundle attached.

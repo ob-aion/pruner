@@ -33,7 +33,7 @@ def _sample() -> Finding:
 
 
 def test_emit_shape() -> None:
-    sarif = findings_to_sarif([_sample()], tool_name="pruner-wrapper", tool_version="0.1.2")
+    sarif = findings_to_sarif([_sample()], tool_name="pruner-wrapper", tool_version="0.1.3")
     assert sarif["$schema"] == SARIF_SCHEMA
     assert sarif["version"] == SARIF_VERSION
     assert sarif["runs"][0]["tool"]["driver"]["name"] == "pruner-wrapper"
@@ -44,7 +44,7 @@ def test_emit_shape() -> None:
 
 
 def test_roundtrip_parse() -> None:
-    sarif = findings_to_sarif([_sample()], tool_name="pruner-wrapper", tool_version="0.1.2")
+    sarif = findings_to_sarif([_sample()], tool_name="pruner-wrapper", tool_version="0.1.3")
     parsed = findings_from_sarif(sarif, default_tool_name="x")
     assert len(parsed) == 1
     assert parsed[0].id == "X-001"
@@ -54,13 +54,13 @@ def test_roundtrip_parse() -> None:
 
 def test_write_and_read(tmp_path: Path) -> None:
     out = tmp_path / "out.sarif"
-    write_sarif([_sample()], out, tool_name="pruner-wrapper", tool_version="0.1.2")
+    write_sarif([_sample()], out, tool_name="pruner-wrapper", tool_version="0.1.3")
     sarif = read_sarif(out)
     assert sarif["version"] == SARIF_VERSION
 
 
 def test_empty_findings_emit_empty_results() -> None:
-    sarif = findings_to_sarif([], tool_name="pruner-wrapper", tool_version="0.1.2")
+    sarif = findings_to_sarif([], tool_name="pruner-wrapper", tool_version="0.1.3")
     assert sarif["runs"][0]["results"] == []
 
 

@@ -25,4 +25,4 @@ The composite action runs entirely on GitHub-hosted or self-hosted runners belon
 
 ## Disclosure history
 
-None at v0.1.2.
+None at v0.1.3.

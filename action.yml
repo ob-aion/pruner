@@ -199,7 +199,18 @@ runs:
     - id: gate
       shell: bash
       run: |
-        set -euo pipefail
+        set -uo pipefail
+        # `pruner gate` exit codes per CLI spec:
+        #   0 = no findings; 1 = findings below threshold (informational);
+        #   2 = findings above threshold; 3 = internal error.
+        # Only 2 and 3 are workflow failures — exit 1 means the gate
+        # threshold was respected, even though some lower-severity findings
+        # exist in the bundle.
         pruner gate \
           --report "${{ inputs.report-output }}/report.json" \
-          --fail-on "${{ inputs.fail-on }}"
+          --fail-on "${{ inputs.fail-on }}" || EXIT=$?
+        EXIT=${EXIT:-0}
+        if [ "${EXIT}" -le 1 ]; then
+          exit 0
+        fi
+        exit "${EXIT}"
