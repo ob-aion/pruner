@@ -12,15 +12,16 @@ pattern:
   max_length: 64
   forbid_tokens:
     - anthropic
-    - claude
     - openai
     - cisco
     - snyk
 rationale: |
   Frontmatter `name` is the activation oracle for an agent skill. Reserved
   publisher tokens enable typosquatting (AST04 Insecure Metadata, AST07
-  Cross-Platform Reuse). The 64-character cap and the kebab-case shape come
-  from the agentskills.io spec.
+  Cross-Platform Reuse). The forbid list covers PUBLISHER identities, not
+  agent vocabulary — `claude-md`, `claude-api` etc. are legitimate names
+  that reference *working with* Claude. The 64-character cap and the
+  kebab-case shape come from the agentskills.io spec.
 references:
   - https://owasp.org/www-project-agentic-skills-top-10/
   - https://agentskills.io/
@@ -28,10 +29,12 @@ fixtures:
   positive:
     - 'name: "Anthropic_Helper"'
     - 'name: "code formatter"'
-    - 'name: "claude-helper"'
+    - 'name: "anthropic-helper"'
   negative:
     - 'name: "code-formatter"'
     - 'name: "format-py"'
+    - 'name: "claude-md"'
+    - 'name: "claude-api"'
 scope:
   file_patterns:
     - "**/SKILL.md"

@@ -44,4 +44,12 @@ def test_space_in_name_fails(rule_loader: Callable[[str], Rule]) -> None:
 
 def test_reserved_token_fails(rule_loader: Callable[[str], Rule]) -> None:
     rule = rule_loader("FC001")
-    expect_match(rule, with_skill_frontmatter(name="claude-helper"))
+    expect_match(rule, with_skill_frontmatter(name="anthropic-helper"))
+
+
+def test_claude_prefix_allowed(rule_loader: Callable[[str], Rule]) -> None:
+    """`claude-md`, `claude-api` etc. reference Claude as a target agent,
+    not as a publisher identity. Allowed."""
+    rule = rule_loader("FC001")
+    expect_no_match(rule, with_skill_frontmatter(name="claude-md"))
+    expect_no_match(rule, with_skill_frontmatter(name="claude-api"))
