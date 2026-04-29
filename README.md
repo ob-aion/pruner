@@ -22,6 +22,7 @@ Coroboros's attestation chain for agent skill repositories.
 - [What it does](#what-it-does)
 - [Quick start](#quick-start)
 - [How it works](#how-it-works)
+- [Snyk second opinion](#snyk-second-opinion)
 - [Coverage](#coverage)
 - [Reports and attestation](#reports-and-attestation)
 - [Governance](#governance)
@@ -73,6 +74,12 @@ Three stages, in sequence:
 3. **Attestation.** SBOM via `anchore/sbom-action`, build provenance via `actions/attest-build-provenance`, SBOM signing via `actions/attest-sbom`. Output is a single `report-v1.json` plus the signed bundle, attached to the GitHub release.
 
 Architecture deep-dive: [`docs/architecture.md`](./docs/architecture.md). Why Cisco as the detection backend: [`docs/why-cisco.md`](./docs/why-cisco.md).
+
+## Snyk second opinion
+
+Optional. `coroboros/pruner` accepts `snyk/agent-scan` as a second-opinion runner — set `with-snyk: true` and provide `SNYK_TOKEN`. Findings land in the report's `tools[]` block with `mode: second-opinion, blocking: false`.
+
+Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap default. Skip for private or regulated content. Without a token, the step is silently skipped; the workflow does not fail. Setup walkthrough: [`docs/consumer-integration.md#snyk-second-opinion`](./docs/consumer-integration.md#snyk-second-opinion).
 
 ## Coverage
 

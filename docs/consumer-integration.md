@@ -93,6 +93,57 @@ Add to your skill-author checklist:
 
 > **Pruner runs on every PR and tag.** A failing Pruner blocks merge. Allowlist entries require a written justification in `.pruner-ignore.yml`.
 
+## Snyk second opinion
+
+Optional. `coroboros/pruner` accepts `snyk/agent-scan` as a second-opinion runner; off by default.
+
+Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap default. Use only for content not subject to private or regulated handling. Background on the trade-off: [`docs/why-cisco.md#considered-alternatives`](./why-cisco.md#considered-alternatives).
+
+### Setup
+
+1. **Generate a `SNYK_TOKEN`.** From <https://app.snyk.io/account>, copy the API token.
+2. **Add it as a repo secret.** Settings → Secrets and variables → Actions → New repository secret → name `SNYK_TOKEN`.
+3. **Pass the secret through and flip `with-snyk`.**
+
+```yaml
+jobs:
+  audit:
+    uses: coroboros/pruner/.github/workflows/reusable-full-scan.yml@0.1.0
+    with:
+      fail-on: medium
+      with-snyk: true
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+Without a token, the snyk step is silently skipped — the workflow does not fail.
+
+### Snyk binary
+
+The composite action invokes `snyk` via `command -v snyk`. `ubuntu-latest` runners do not pre-install Snyk; without an explicit install step the runner silently skips Snyk findings even when the token is present. The reusable workflow does not expose pre-step injection at 0.1.0, so wiring Snyk in requires the composite action directly:
+
+```yaml
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - run: npm install -g snyk
+      - uses: coroboros/pruner@0.1.0
+        with:
+          fail-on: medium
+          with-snyk: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+```
+
+Snyk findings land in the report's `tools[]` block with `mode: second-opinion, blocking: false`.
+
 ## Verifying a published report
 
 Anyone with the release asset can verify the bundle:
