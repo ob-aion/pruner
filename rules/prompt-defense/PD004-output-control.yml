@@ -1,0 +1,52 @@
+id: PD004
+slug: output-control-defense
+title: "Output-control defense missing — output format invariants undefined"
+severity: medium
+category: prompt-defense
+owasp_ref: LLM02
+owasp_ast: AST05
+default_active: false
+pattern:
+  type: absence-regex
+  must_contain_any:
+    - "output must be"
+    - "respond only with"
+    - "format: json"
+    - "format: yaml"
+    - "do not include"
+    - "respond strictly"
+  activation_gate:
+    frontmatter_description_match: "agent|assistant|plan|execute|browse|autonomously"
+rationale: |
+  Generalist agents that do not constrain their output shape are vulnerable
+  to insecure-output-handling attacks (LLM02 / AST05): downstream consumers
+  parse free-form text and act on attacker-controlled structure. Even a
+  loose constraint ("respond only with...") cuts the attack surface.
+references:
+  - https://owasp.org/www-project-top-10-for-llm-applications/
+fixtures:
+  positive:
+    - |
+      ---
+      name: assistant
+      description: "Generalist assistant that plans tasks."
+      ---
+      Body without output-format constraint.
+  negative:
+    - |
+      ---
+      name: assistant
+      description: "Generalist assistant that plans tasks."
+      ---
+      Output must be valid JSON.
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+    - "**/CLAUDE.md"
+    - "**/AGENT.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+status: stable
+since: "0.1.0"

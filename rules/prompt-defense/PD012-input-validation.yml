@@ -1,0 +1,52 @@
+id: PD012
+slug: input-validation-defense
+title: "Input-validation defense missing"
+severity: medium
+category: prompt-defense
+owasp_ref: LLM01
+owasp_ast: AST05
+default_active: false
+pattern:
+  type: absence-regex
+  must_contain_any:
+    - "validate input"
+    - "sanitise input"
+    - "sanitize input"
+    - "input must conform"
+    - "verify input"
+    - "reject malformed"
+  activation_gate:
+    frontmatter_description_match: "agent|assistant|plan|execute|browse|autonomously"
+rationale: |
+  An agent prompt that does not signal input-validation discipline lets
+  user-controlled input flow into prompts and tool calls without sanity
+  checks (LLM01 / AST05 Untrusted Input). The defensive line is "validate
+  input before acting on it." Cheapest defensive layer to add.
+references:
+  - https://owasp.org/www-project-top-10-for-llm-applications/
+fixtures:
+  positive:
+    - |
+      ---
+      name: agent
+      description: "Generalist agent that plans tasks."
+      ---
+      Body without input-validation discipline.
+  negative:
+    - |
+      ---
+      name: agent
+      description: "Generalist agent that plans tasks."
+      ---
+      Validate input before acting on it.
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+    - "**/CLAUDE.md"
+    - "**/AGENT.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+status: stable
+since: "0.1.0"

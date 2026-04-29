@@ -10,7 +10,6 @@ import yaml
 from pruner_wrapper.types import Rule
 from tests.rules._helpers import assert_yaml_valid, expect_match, expect_no_match
 
-
 PINNED = """# /// script
 # dependencies = ["requests==2.31.0"]
 # ///
