@@ -31,9 +31,6 @@ report.json
 # Dogfood / scratch
 .checkpoint.md
 
-# Per-release notes — passed to `gh release create --notes-file`, then removed
-.release-notes.md
-
 # IDE / OS
 .idea/
 .vscode/
