@@ -68,7 +68,7 @@ Zero hard FPs. The fifteen severity-inflation findings are FC005 license-non-SPD
 2. **FC005 vs. proprietary-license strings.** Consider adding `"Proprietary"` and `"Commercial"` to a parallel "non-OSS-SPDX" set, or relaxing FC005 to severity `info` when the value is a known-proprietary string. No code change at 0.1.0.
 3. **`vercel-labs/agent-skills` `metadata.version` convention divergence.** Document that Coroboros's FC004 represents a house rule that Vercel-ecosystem skills do not share. Recommend `.pruner-policy.yml` opt-out for Vercel-pattern consumers.
 
-Three notes total. Within the ≤ 3 cap per `RUNBOOK.md` / `PLAN.md` §9.5 Gate A.
+Three notes total. Within the ≤ 3 cap defined in [`GOVERNANCE.md`](../GOVERNANCE.md#rule-pack-policy).
 
 ### Reproduction
 

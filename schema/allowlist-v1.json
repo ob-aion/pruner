@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://reports.coroboros.com/schema/allowlist-v1.json",
   "title": "Pruner allowlist v1",
-  "description": "Justification-mandatory allowlist. PLAN.md §11.",
+  "description": "Justification-mandatory allowlist.",
   "type": "object",
   "required": ["version", "ignores"],
   "additionalProperties": false,

@@ -73,16 +73,15 @@ Format: `type(scope): subject`. Scope is the affected module: `wrapper`, `rules`
 - `fix(wrapper): correct codepoint range for variation selectors`
 - `docs(coverage): clarify Cisco's Office macro scope`
 
+## Changelog and releases
+
+[`CHANGELOG.md`](./CHANGELOG.md) is the user-facing release log. Every PR that ships a behaviour change appends a bullet under the next version entry. Format mirrors the rest of the Coroboros family: section header `## vX.Y.Z - DD/MM/YYYY`, terse bullets describing what's in the release.
+
+Versioning is SemVer strict — git tags and GitHub release titles use the bare version (`0.1.0`, never `v0.1.0`); the CHANGELOG section header is the only place the `v` prefix appears, as a presentation convention. One PR maps to one tag and one GitHub release; release cadence and rule-pack policy live in [`GOVERNANCE.md`](./GOVERNANCE.md).
+
 ## Adding a Coroboros pack rule
 
-Required: see [`docs/writing-rules.md`](./docs/writing-rules.md). Briefly:
-
-1. YAML rule under `rules/<category>/<RULE_ID>-<slug>.yml` conforming to [`schema/rule-v1.json`](./schema/rule-v1.json).
-2. `rationale` cites OWASP LLM/AST refs or primary research.
-3. `owasp_ref` (LLM01–LLM10) AND `owasp_ast` (AST01–AST10).
-4. Positive AND negative fixtures.
-5. Test file at `wrapper/tests/rules/test_<RULE_ID>.py`.
-6. FP measurement on `examples/benign-skill` and ≥3 public skill repos before promotion to `status: stable`.
+See [`docs/writing-rules.md`](./docs/writing-rules.md) for the schema, the source-confidence weighting, and the test conventions. Promotion to `status: stable` requires positive + negative fixtures, OWASP LLM/AST refs, and an FP measurement on `examples/benign-skill` plus ≥3 public skill repos.
 
 ## Reporting a false positive
 

@@ -1,7 +1,6 @@
 """Lore strings used by the terminal formatter.
 
 Outsiders read plain English; insiders recognise the references. ASCII-only.
-PLAN.md Appendix D.
 """
 
 from __future__ import annotations

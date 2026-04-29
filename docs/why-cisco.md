@@ -71,4 +71,4 @@ The Coroboros policy pack runs after the engine and is engine-agnostic. Swapping
 
 - **`snyk/agent-scan`.** Apache-2.0 CLI and excellent toxic-flow analysis, but cloud-uplink mandatory (`SNYK_TOKEN`) breaks the air-gap thesis. Available as opt-in second opinion in the composite action when `SNYK_TOKEN` is present (`with-snyk: true`).
 - **`vercel-labs/skills` audit.** Three-partner aggregated audit, but install-time placement (server-side, bypassed by direct git clone). Complementary, not an engine choice.
-- **Home-grown engine.** Considered as Option A in [`DECISION.md`](../DECISION.md). Rejected: maintenance tax of 57+ rules, day-1 trust deficit, contested differentiation.
+- **Home-grown engine.** Rejected: maintenance tax of a 50+ rule injection corpus, day-1 trust deficit against an unproven scanner, contested differentiation in a space Cisco and Snyk already cover.

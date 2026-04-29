@@ -1,6 +1,6 @@
 """Pruner org-policy evaluator — `.pruner-policy.yml`.
 
-Failing policy fails the workflow regardless of `fail-on`. Per PLAN.md §10.
+Failing policy fails the workflow regardless of `fail-on`.
 """
 
 from __future__ import annotations

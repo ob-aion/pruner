@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://reports.coroboros.com/schema/policy-v1.json",
   "title": "Pruner Policy v1",
-  "description": "Org-level policy applied alongside `fail-on`. PLAN.md §10.",
+  "description": "Org-level policy applied alongside `fail-on`.",
   "type": "object",
   "required": ["version", "name"],
   "additionalProperties": false,

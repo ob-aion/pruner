@@ -79,7 +79,7 @@ wrapper/
 
 ## Source confidence
 
-Findings carry a `source_confidence` tag derived from the file path. Continuous weight per [`PLAN.md` §6 Brique 2](../PLAN.md). Secrets and PI-UNI-* findings have `weight_override: 1.00` — invisible payloads are still invisible regardless of where they sit.
+Findings carry a `source_confidence` tag derived from the file path — continuous weight, not tier downgrade. See [`docs/writing-rules.md`](./writing-rules.md#source-confidence) for the path → tag mapping. Secrets and PI-UNI-* findings have `weight_override: 1.00` — invisible payloads are still invisible regardless of where they sit.
 
 ## Trust chain
 

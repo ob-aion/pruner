@@ -31,7 +31,7 @@ report.json
 # Dogfood / scratch
 .checkpoint.md
 
-# Per-release notes — OB writes via `gh release create --notes-file`, then rm
+# Per-release notes — passed to `gh release create --notes-file`, then removed
 .release-notes.md
 
 # IDE / OS

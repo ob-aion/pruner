@@ -1,6 +1,6 @@
 # Threat model
 
-Long-form mirror of [`SECURITY.md`](../SECURITY.md). Describes what Pruner detects, what it ignores, and why.
+Canonical threat model for Pruner. Top-level [`SECURITY.md`](../SECURITY.md) holds the disclosure procedure and SLA; this document describes what Pruner detects, what it ignores, and why.
 
 ## Audience
 
@@ -26,7 +26,13 @@ A malicious contributor — or a compromised maintainer account — landing one 
 
 ## In scope
 
-Static analysis of every committed file in the audited repo, plus the metadata derivable from git (commit SHA, ref, target). Output is deterministic (no LLM keys required at v0.1).
+- Static analysis of `SKILL.md`, frontmatter, `scripts/`, `references/`, `assets/`, and `.github/workflows/` files in the audited repo.
+- Detection delegated to `cisco-ai-defense/skill-scanner` (Apache-2.0) under SHA pin, plus the Coroboros policy pack of 12 default-on rules + 12 opt-in PD rules.
+- Secrets scanning via `gitleaks`.
+- Workflow safety via `actionlint`.
+- Attestation via `actions/attest-build-provenance` + `actions/attest-sbom`.
+
+Output is deterministic at v0.1 — no LLM keys required.
 
 ## Out of scope
 
@@ -39,15 +45,18 @@ Static analysis of every committed file in the audited repo, plus the metadata d
 - **MCP server runtime behavior** — Snyk + AgentShield.
 - **Image / PDF OCR injection** — Cisco scans some; full multimodal is out of v0.1 scope.
 
+Per-rule × per-tool coverage matrix: [`docs/coverage-matrix.md`](./coverage-matrix.md).
+
 ## Trust boundaries
 
 Pruner emits a signed bundle that downstream consumers verify with `gh attestation verify`. The verification path uses public-good Sigstore + GitHub OIDC. **No Coroboros service is in the trust path.** A consumer can verify a Pruner report from years past even if Coroboros disappears.
 
-The Cisco engine ships under Apache-2.0 with a SHA-pinned dependency in `wrapper/CISCO_PIN.md`. License-drift halts the action on upstream license change.
+The Cisco engine ships under Apache-2.0 with a SHA-pinned dependency in [`wrapper/CISCO_PIN.md`](../wrapper/CISCO_PIN.md). License-drift halts the action on upstream license change.
 
 ## What "Pruner Verified" means
 
 A signed attestation that the audited repo, at the scanned commit:
+
 - Was scanned by `cisco-ai-skill-scanner` at the pinned version with no findings exceeding the consumer's `fail-on` threshold (or with allowlisted findings, listed transparently in the report).
 - Passed every default-on Coroboros pack rule (12 rules at v0.1).
 - Passed gitleaks and actionlint against the audited surface.
@@ -57,8 +66,14 @@ It does NOT mean: the skill is safe to run on arbitrary inputs in arbitrary agen
 
 ## False-positive discipline
 
-Rules with measured FP rate > 20 % on the canonical benign corpus drop to `status: experimental` and out of the default pack. Per-rule `context_rules` provide in-matcher suppression. Repo-level `.pruner-ignore.yml` requires mandatory justification and is listed in every report.
+Rules with measured FP rate > 20 % on the canonical benign corpus drop to `status: experimental` and out of the default pack. Per-rule `context_rules` provide in-matcher suppression. Repo-level `.pruner-ignore.yml` requires mandatory justification and is listed in every report. Living audit: [`docs/fp-audit.md`](./fp-audit.md).
 
 ## Audit-the-auditor
 
-See [`SECURITY.md`](../SECURITY.md) for Pruner's own attack surface and self-defenses (license-drift halt, monthly upstream probe, self-scan, SHA-pinning of every wrapped action).
+Pruner's own attack surface is small but real:
+
+- **Wrapper package (`pruner-wrapper`).** Runtime deps are `pyyaml` and `cisco-ai-skill-scanner` (the pinned engine). Stdlib otherwise. The dependency surface is reviewable in `wrapper/pyproject.toml`. Dependabot tracks bumps; CODEOWNERS-required review.
+- **Cisco engine.** Apache-2.0, multi-thousand-LOC scanner. Pinned at `2.0.9`. License-drift check runs at install ([`scripts/setup-cisco.sh`](../scripts/setup-cisco.sh)) and halts the action if the upstream license marker changes. Monthly cron probe at [`.github/workflows/cisco-upstream-check.yml`](../.github/workflows/cisco-upstream-check.yml) opens an `upstream-drift` issue on archival, license change, or 90-day staleness.
+- **Composite action.** Every `uses:` line is SHA-pinned with a `# v1.2.3` comment for human-readable diff review. No JS / no compiled `dist/`.
+- **Self-scan.** Pruner scans Pruner on every push ([`.github/workflows/self-scan.yml`](../.github/workflows/self-scan.yml)). A failing self-scan blocks merge.
+- **Release integrity.** [`release.yml`](../.github/workflows/release.yml) re-runs the full scan against the tagged ref. Drift between `main` and the tag fails the release.

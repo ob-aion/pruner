@@ -1,6 +1,8 @@
 """Map a file path to its `source_confidence` tag and weight.
 
-Continuous weight, not tier downgrade. Per PLAN.md §6 Brique 2.
+Continuous weight, not tier downgrade. Higher-trust paths (active-runtime,
+hook-code) keep severity at full weight; template / docs / test fixture
+paths downgrade. Secrets and PI-UNI-* findings are weight-locked at 1.00.
 """
 
 from __future__ import annotations

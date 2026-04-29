@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://reports.coroboros.com/schema/report-v1.json",
   "title": "Pruner Report v1",
-  "description": "Pruner aggregated scan report. PLAN.md Appendix C.",
+  "description": "Pruner aggregated scan report.",
   "type": "object",
   "required": [
     "schema_version",

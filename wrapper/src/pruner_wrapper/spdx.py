@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 # Top OSI-approved identifiers covering the bulk of OSS skill repositories.
-# Expand as needed; intentionally not the full SPDX license list to keep the
-# wrapper dependency surface zero. PLAN.md `docs/writing-rules.md` notes the
-# expansion procedure.
+# Expansion procedure documented in `docs/writing-rules.md`.
 SPDX_IDENTIFIERS: frozenset[str] = frozenset(
     {
         "0BSD",

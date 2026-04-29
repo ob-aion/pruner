@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://reports.coroboros.com/schema/rule-v1.json",
   "title": "Pruner Rule v1",
-  "description": "Coroboros policy pack rule. PLAN.md Appendix A.",
+  "description": "Coroboros policy pack rule.",
   "type": "object",
   "required": [
     "id",

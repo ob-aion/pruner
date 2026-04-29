@@ -1,9 +1,4 @@
-# Governance
-
-## Maintainers
-
-- **Lead maintainer:** OB (`@ob-aion`).
-- **Co-maintainer signal:** active `help-wanted: co-maintainer` issue from v0.1.0. Cisco upstream-monitoring needs more than one set of eyes.
+**Lead maintainer:** `@ob-aion`. Bus-factor disclosure in [`BUS_FACTOR.md`](./BUS_FACTOR.md). Co-maintainer signal: active `help-wanted: co-maintainer` issue from v0.1.0 — Cisco upstream-monitoring wants more than one set of eyes.
 
 DCO required (`Signed-off-by:` trailer); no CLA.
 
@@ -32,9 +27,7 @@ Rules live under `rules/` and conform to [`schema/rule-v1.json`](./schema/rule-v
 
 ## Cisco upstream-monitoring
 
-- **Pinned engine.** `wrapper/CISCO_PIN.md` records the pinned version, main-HEAD SHA, and Apache-2.0 marker grep at install time.
-- **Monthly probe.** `.github/workflows/cisco-upstream-check.yml` confirms the upstream repo is not archived, the latest release is ≤ 90 days old, the LICENSE remains Apache-2.0, and no critical CVE is open against the engine. Failure opens an `upstream-drift` issue. Triage SLA: 7 days.
-- **Bumps.** Dependabot proposes pin updates. CODEOWNERS-required review for changes to `wrapper/CISCO_PIN.md`.
+Pinned engine + monthly health probe + Dependabot bumps with CODEOWNERS review. Pin and bump procedure: [`wrapper/CISCO_PIN.md`](./wrapper/CISCO_PIN.md). Cron: [`.github/workflows/cisco-upstream-check.yml`](./.github/workflows/cisco-upstream-check.yml). On drift the cron opens an `upstream-drift` issue with a 7-day triage SLA.
 
 ## Self-scan integrity
 

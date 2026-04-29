@@ -4,7 +4,7 @@ Each rule:
 - Schema-validates against rule-v1.json.
 - Has `default_active: false` so it stays off unless `.pruner-policy.yml`
   flips `scan_prompt_defense_posture: true`.
-- Maps to a documented OWASP LLM/AST reference per PLAN.md §7.4.
+- Maps to a documented OWASP LLM and AST reference.
 - Fires on a generalist-agent SKILL.md missing the corresponding defensive
   language; does not fire on a utility skill (filtered by activation_gate).
 """

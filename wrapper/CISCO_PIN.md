@@ -54,8 +54,8 @@ Failure opens an issue tagged `upstream-drift`. Triage SLA: 7 days.
    pruner scan /tmp/pruner-dogfood/vercel-labs-agent-skills
    ```
 5. Update `docs/fp-audit.md` with regression notes if findings shift materially.
-6. CODEOWNERS-required review (`@ob-aion`).
-7. Merge → tag minor → release (per `~/.claude/rules/git-conventions.md`).
+6. CODEOWNERS-required review.
+7. Merge → tag minor → release per [`GOVERNANCE.md`](../GOVERNANCE.md#release-cadence).
 
 ## Why this version
 

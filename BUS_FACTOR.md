@@ -4,13 +4,13 @@ Honest declaration of maintainer capacity, in keeping with Coroboros's "ship sig
 
 ## Current state — 0.1.0
 
-- **Bus factor: 1.** Single maintainer (OB, `@ob-aion`).
+- **Bus factor: 1.** Single maintainer: `@ob-aion`.
 - **Co-maintainer signal:** open at `help-wanted: co-maintainer` since v0.1.0.
 - **Coverage if maintainer disappears:** the repo is Apache-2.0, every dependency is SHA-pinned, and the trust artefacts (signed report bundle, in-toto attestation) are independently verifiable via `gh attestation verify` against public-good Sigstore. Existing releases keep working. No new releases ship.
 
 ## Why this is tolerable at 0.x
 
-Pruner Option B keeps the engine surface in Cisco's hands. The Coroboros-owned code is a thin wrapper plus 24 YAML rules. A motivated contributor can fork, audit, and continue maintenance in a weekend.
+Pruner keeps the engine surface in Cisco's hands. The Coroboros-owned code is a thin wrapper plus 24 YAML rules. A motivated contributor can fork, audit, and continue maintenance in a weekend.
 
 ## Mitigations
 
