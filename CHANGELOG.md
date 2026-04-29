@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.2 - 29/04/2026
+
+Suppresses a gitleaks false positive that blocked the 0.1.1 release pipeline. First release with the signed attestation bundle attached.
+
+- Added `.gitleaksignore` with the fingerprint for `wrapper/tests/test_policy.py:69`. The `generic-api-key` rule pattern-matched a Python keyword argument (`severity_declared="..."` adjacent to the literal `secrets`) — no actual credential was present. Suppression is fingerprint-scoped with a written justification in the file.
+
 ## v0.1.1 - 29/04/2026
 
 Maintenance release fixing CI issues that blocked 0.1.0 from attaching the signed attestation bundle to the release.

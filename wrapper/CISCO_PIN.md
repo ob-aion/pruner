@@ -2,7 +2,7 @@
 
 Pruner pins the detection backend to a specific `cisco-ai-skill-scanner` release. This file documents the current pin, the verification at install time, and the bump procedure.
 
-## Current pin (0.1.1)
+## Current pin (0.1.2)
 
 | Field | Value |
 |---|---|
