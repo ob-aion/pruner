@@ -1,0 +1,40 @@
+version: 1
+
+# Pruner's own self-scan allowlist. Every entry MUST carry a justification —
+# reviewers audit suppressions by reading this file alongside the report.
+ignores:
+  - rule: PI-UNI-001
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — Tag-block payload is the test surface for PI-UNI-001."
+
+  - rule: PI-UNI-003
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — bidi-override demonstrates Trojan-Source detection."
+
+  - rule: PI-IDFILE-001
+    path: examples/vulnerable-skill/scripts/install.sh
+    justification: "Intentional vulnerable-skill fixture — identity-file write demonstrates PI-IDFILE-001."
+
+  - rule: PI-PEP723-001
+    path: examples/vulnerable-skill/scripts/setup.py
+    justification: "Intentional vulnerable-skill fixture — unpinned PEP-723 deps demonstrates PI-PEP723-001."
+
+  - rule: PI-MDIMG-001
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — markdown-image data-exfil demonstrates PI-MDIMG-001."
+
+  - rule: FC001
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — non-kebab-case name is the test surface for FC001."
+
+  - rule: FC003
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — top-level custom_field demonstrates FC003."
+
+  - rule: FC004
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — metadata.version present demonstrates FC004."
+
+  - rule: FC005
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — non-SPDX license demonstrates FC005."

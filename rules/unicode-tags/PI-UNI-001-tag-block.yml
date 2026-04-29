@@ -1,0 +1,43 @@
+id: PI-UNI-001
+slug: unicode-tag-block
+title: "Hidden Unicode Tag block (U+E0000-U+E007F) — ASCII smuggling"
+severity: critical
+category: prompt-injection
+owasp_ref: LLM01
+owasp_ast: AST01
+pattern:
+  type: codepoint-range
+  ranges:
+    - ["E0000", "E007F"]
+rationale: |
+  The Unicode Tag block is the canonical invisible-prompt-injection vector.
+  Embrace-the-Red (Feb 2026) demonstrated a backdoored SKILL.md against
+  Claude Code carrying instructions encoded in Tag-block bytes.
+  arXiv:2603.00164 confirmed Anthropic models preferentially decode Tag-block
+  bytes alongside ASCII. A single hit is sufficient to flag.
+references:
+  - https://embracethered.com/blog/posts/2024/hiding-and-finding-text-with-unicode-tags/
+  - https://arxiv.org/abs/2603.00164
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive:
+    - "Hello\U000E0049\U000E0067\U000E006E\U000E006F\U000E0072\U000E0065"
+  negative:
+    - "Hello, normal ASCII content."
+scope:
+  file_patterns:
+    - "**/*.md"
+    - "**/SKILL.md"
+    - "skills/**/scripts/*"
+    - "skills/**/scripts/**"
+  ignore_in_fenced_blocks: false
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+weight_override: 1.00
+fix:
+  auto: false
+  description: "Strip invisible Tag-block characters from the file."
+status: stable
+since: "0.1.0"

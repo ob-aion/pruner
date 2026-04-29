@@ -1,0 +1,42 @@
+id: PI-UNI-003
+slug: bidi-override-trojan-source
+title: "Bidi override (U+202E) — Trojan Source"
+severity: critical
+category: prompt-injection
+owasp_ref: LLM01
+owasp_ast: AST01
+pattern:
+  type: codepoint-range
+  ranges:
+    - ["202A", "202E"]
+    - ["2066", "2069"]
+rationale: |
+  Trojan Source (Boucher & Anderson, CVE-2021-42574). Bidi controls reorder
+  rendered text vs. logical bytes — agents process logical order, humans see
+  reordered output. The attack class is universal across Markdown and source
+  code. A single hit is sufficient to flag.
+references:
+  - https://trojansource.codes/
+  - https://nvd.nist.gov/vuln/detail/CVE-2021-42574
+fixtures:
+  positive:
+    - "var x = ‮'safe'‬; // attacker"
+  negative:
+    - "var x = 'safe'; // attacker"
+scope:
+  file_patterns:
+    - "**/*.md"
+    - "**/SKILL.md"
+    - "skills/**/scripts/*"
+    - "skills/**/scripts/**"
+  ignore_in_fenced_blocks: false
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+weight_override: 1.00
+fix:
+  auto: false
+  description: "Remove bidi override codepoints (U+202A-U+202E, U+2066-U+2069)."
+status: stable
+since: "0.1.0"

@@ -1,0 +1,44 @@
+id: PI-UNI-002
+slug: variation-selectors-payload
+title: "Variation selectors carrying payload (U+FE00-U+FE0F, U+E0100-U+E01EF)"
+severity: critical
+category: prompt-injection
+owasp_ref: LLM01
+owasp_ast: AST01
+pattern:
+  type: codepoint-range
+  ranges:
+    - ["FE00", "FE0F"]
+    - ["E0100", "E01EF"]
+  threshold: 4
+rationale: |
+  Variation Selectors normally modify the visual variant of a single emoji
+  glyph (one selector per char). Clusters of four or more on Latin chars or
+  in metadata fields are payload-smuggling — same family as PI-UNI-001 with
+  a different codepoint range. The threshold of 4 avoids false positives on
+  legitimate emoji modifiers (which never cluster like this).
+references:
+  - https://owasp.org/www-project-agentic-skills-top-10/
+  - https://embracethered.com/blog/posts/2024/hiding-and-finding-text-with-unicode-tags/
+fixtures:
+  positive:
+    - "ascii︀︁︂︃ payload"
+  negative:
+    - "emoji \U0001F44D️"
+scope:
+  file_patterns:
+    - "**/*.md"
+    - "**/SKILL.md"
+    - "skills/**/scripts/*"
+    - "skills/**/scripts/**"
+  ignore_in_fenced_blocks: false
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+weight_override: 1.00
+fix:
+  auto: false
+  description: "Strip clustered variation selectors from the file."
+status: stable
+since: "0.1.0"
