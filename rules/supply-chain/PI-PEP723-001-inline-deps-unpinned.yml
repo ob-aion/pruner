@@ -1,0 +1,47 @@
+id: PI-PEP723-001
+slug: pep723-inline-deps-unpinned
+title: "PEP-723 inline metadata declares deps without `==` pins"
+severity: high
+category: supply-chain
+owasp_ref: LLM05
+owasp_ast: AST07
+pattern:
+  type: pep723-validator
+  require_pin_operator:
+    - "=="
+rationale: |
+  PEP-723 inline-script blocks (`# /// script` ... `# ///`) resolve
+  dependencies at run time. Unpinned deps mean review-time benign,
+  run-time malicious — the exact attack chain SafeDep documented on
+  agent-skill scripts. Pinning is `package==1.2.3`. Looser operators
+  (`>=`, `~=`) allow upstream takeover.
+references:
+  - https://peps.python.org/pep-0723/
+  - https://safedep.io/
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive: |
+    # /// script
+    # dependencies = ["requests"]
+    # ///
+  negative: |
+    # /// script
+    # dependencies = ["requests==2.31.0"]
+    # ///
+scope:
+  file_patterns:
+    - "skills/**/*.py"
+    - "skills/**/scripts/*.py"
+    - "**/scripts/*.py"
+    - "**/scripts/**.py"
+    - "**/*.py"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "wrapper/src/**"
+    - "**/__snapshots__/**"
+fix:
+  auto: false
+  description: "Pin every dependency with `==<version>` (or remove the inline metadata)."
+status: stable
+since: "0.1.0"

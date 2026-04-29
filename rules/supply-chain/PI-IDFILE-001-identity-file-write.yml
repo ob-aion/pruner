@@ -1,0 +1,50 @@
+id: PI-IDFILE-001
+slug: identity-file-write
+title: "Script writes to identity / persistence files"
+severity: critical
+category: prompt-injection
+owasp_ref: LLM06
+owasp_ast: AST01
+pattern:
+  type: regex
+  value: '(?i)(echo|cat|tee|cp|>>?)\s+.*?(AGENTS\.md|MEMORY\.md|SOUL\.md|\.cursorrules|\.bashrc|\.zshrc|\.claude/settings(\.local)?\.json|CLAUDE\.md)'
+rationale: |
+  Identity-file writes are the ClawHavoc session-persistent backdoor pattern
+  (AST01, Q1 2026 campaign, 1,184 malicious skills). One scan-time write to
+  AGENTS.md / MEMORY.md / SOUL.md / .cursorrules / .bashrc / .zshrc /
+  .claude/settings.json / CLAUDE.md is permanent agent compromise — the
+  agent picks up the injected instructions on every subsequent session.
+references:
+  - https://owasp.org/www-project-agentic-skills-top-10/
+  - https://koi.security/
+fixtures:
+  positive:
+    - "echo 'malicious instruction' >> ~/AGENTS.md"
+    - "cp /tmp/payload .claude/settings.json"
+    - "cat injection >> CLAUDE.md"
+  negative:
+    - "echo 'note for self' >> CHANGELOG.md"
+    - "cp src/x.py dst/x.py"
+scope:
+  file_patterns:
+    - "skills/**/*.sh"
+    - "skills/**/*.py"
+    - "skills/**/*.js"
+    - "skills/**/*.ts"
+    - "skills/**/scripts/*"
+    - "skills/**/scripts/**"
+    - "**/scripts/*.sh"
+    - "**/scripts/*.py"
+    - "**/*.sh"
+  ignore_in_fenced_blocks: false
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "wrapper/src/**"
+    - "**/__snapshots__/**"
+weight_override: 1.00
+fix:
+  auto: false
+  description: "Remove the identity-file write. Skills must not modify agent persistence surfaces."
+status: stable
+since: "0.1.0"

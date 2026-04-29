@@ -23,6 +23,10 @@ ignores:
     path: examples/vulnerable-skill/SKILL.md
     justification: "Intentional vulnerable-skill fixture — markdown-image data-exfil demonstrates PI-MDIMG-001."
 
+  - rule: PI-MDIMG-001
+    path: examples/vulnerable-skill/EXPECTATIONS.md
+    justification: "Cross-walk for vulnerable-skill — quotes the markdown-image syntax for documentation."
+
   - rule: FC001
     path: examples/vulnerable-skill/SKILL.md
     justification: "Intentional vulnerable-skill fixture — non-kebab-case name is the test surface for FC001."
