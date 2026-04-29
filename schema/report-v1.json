@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reports.coroboros.com/schema/report-v1.json",
+  "title": "Pruner Report v1",
+  "description": "Pruner aggregated scan report. PLAN.md Appendix C.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "pruner_version",
+    "scan_id",
+    "target",
+    "generated_at",
+    "tools",
+    "summary",
+    "findings"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+$"
+    },
+    "pruner_version": { "type": "string" },
+    "scan_id": { "type": "string" },
+    "target": {
+      "type": "object",
+      "required": ["repo"],
+      "properties": {
+        "repo": { "type": "string" },
+        "commit": { "type": ["string", "null"] },
+        "tag": { "type": ["string", "null"] },
+        "ref": { "type": ["string", "null"] },
+        "path": { "type": ["string", "null"] }
+      }
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "version", "mode"],
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "sha": { "type": ["string", "null"] },
+          "mode": {
+            "enum": [
+              "primary",
+              "secrets",
+              "policy-pack",
+              "second-opinion",
+              "posture",
+              "workflow-lint"
+            ]
+          },
+          "blocking": { "type": "boolean" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "by_severity", "grade"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "by_severity": {
+          "type": "object",
+          "required": ["critical", "high", "medium", "low", "info"],
+          "properties": {
+            "critical": { "type": "integer", "minimum": 0 },
+            "high": { "type": "integer", "minimum": 0 },
+            "medium": { "type": "integer", "minimum": 0 },
+            "low": { "type": "integer", "minimum": 0 },
+            "info": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "by_source_confidence": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "by_category_score": {
+          "type": "object",
+          "properties": {
+            "secrets": { "type": "number" },
+            "permissions": { "type": "number" },
+            "injection": { "type": "number" },
+            "integrity": { "type": "number" },
+            "governance": { "type": "number" }
+          }
+        },
+        "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "grade": { "enum": ["A", "B", "C", "D", "F"] }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "severity_declared",
+          "severity_effective",
+          "tool",
+          "location",
+          "message"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "type": "string" },
+          "severity_declared": {
+            "enum": ["critical", "high", "medium", "low", "info"]
+          },
+          "severity_effective": {
+            "enum": ["critical", "high", "medium", "low", "info"]
+          },
+          "source_confidence": {
+            "enum": [
+              "active-runtime",
+              "hook-code",
+              "project-local-optional",
+              "plugin-manifest",
+              "template-example",
+              "docs-example",
+              "test-fixture"
+            ]
+          },
+          "owasp_ref": { "type": ["string", "null"] },
+          "owasp_ast": { "type": ["string", "null"] },
+          "tool": { "type": "string" },
+          "location": {
+            "type": "object",
+            "required": ["path"],
+            "properties": {
+              "path": { "type": "string" },
+              "line": { "type": "integer", "minimum": 1 },
+              "start_column": { "type": "integer", "minimum": 1 },
+              "end_column": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "message": { "type": "string" },
+          "evidence_snippet": { "type": "string" },
+          "rationale_ref": { "type": ["string", "null"] },
+          "remediation": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "allowlisted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "path", "justification"],
+        "properties": {
+          "rule": { "type": "string" },
+          "path": { "type": "string" },
+          "justification": { "type": "string", "minLength": 1 },
+          "expires": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "policy_evaluation": {
+      "type": "object",
+      "properties": {
+        "policy_name": { "type": "string" },
+        "policy_path": { "type": "string" },
+        "compliant": { "type": "boolean" },
+        "violations": { "type": "array" }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "properties": {
+        "provenance_url": { "type": "string" },
+        "sbom_url": { "type": "string" },
+        "verification_command": { "type": "string" }
+      }
+    }
+  }
+}

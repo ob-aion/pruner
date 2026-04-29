@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reports.coroboros.com/schema/allowlist-v1.json",
+  "title": "Pruner allowlist v1",
+  "description": "Justification-mandatory allowlist. PLAN.md §11.",
+  "type": "object",
+  "required": ["version", "ignores"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 1 },
+    "ignores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "path", "justification"],
+        "additionalProperties": false,
+        "properties": {
+          "rule": { "type": "string" },
+          "path": { "type": "string" },
+          "justification": { "type": "string", "minLength": 1 },
+          "expires": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reports.coroboros.com/schema/rule-v1.json",
+  "title": "Pruner Rule v1",
+  "description": "Coroboros policy pack rule. PLAN.md Appendix A.",
+  "type": "object",
+  "required": [
+    "id",
+    "slug",
+    "title",
+    "severity",
+    "category",
+    "pattern",
+    "rationale",
+    "fixtures",
+    "scope",
+    "status",
+    "since"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9-]+$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "severity": {
+      "enum": ["critical", "high", "medium", "low", "info"]
+    },
+    "category": {
+      "enum": [
+        "prompt-injection",
+        "prompt-defense",
+        "secrets",
+        "permissions",
+        "integrity",
+        "governance",
+        "supply-chain"
+      ]
+    },
+    "owasp_ref": {
+      "type": ["string", "null"],
+      "pattern": "^LLM(0[1-9]|10)$"
+    },
+    "owasp_ast": {
+      "type": ["string", "null"],
+      "pattern": "^AST(0[1-9]|10)$"
+    },
+    "pattern": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": [
+            "regex",
+            "absence-regex",
+            "codepoint-range",
+            "homoglyph-instruction",
+            "frontmatter-validator",
+            "pep723-validator"
+          ]
+        },
+        "value": { "type": "string" },
+        "ranges": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "type": "string", "pattern": "^[0-9A-Fa-f]+$" }
+          }
+        },
+        "threshold": { "type": "integer", "minimum": 1 },
+        "field": { "type": "string" },
+        "field_path": { "type": "string" },
+        "must_match": { "type": "string" },
+        "min_length": { "type": "integer", "minimum": 0 },
+        "max_length": { "type": "integer", "minimum": 1 },
+        "must_match_spdx": { "type": "boolean" },
+        "must_be_absent": { "type": "boolean" },
+        "forbid_top_level_fields_outside": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "forbid_tokens": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "optional": { "type": "boolean" },
+        "require_pin_operator": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "target_tokens": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "confusables_table": {
+          "enum": ["builtin-tr39"]
+        },
+        "must_contain_any": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "activation_gate": { "type": "object" }
+      }
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 20
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri-reference" }
+    },
+    "fixtures": {
+      "type": "object",
+      "required": ["positive", "negative"],
+      "properties": {
+        "positive": {
+          "type": ["array", "string"]
+        },
+        "negative": {
+          "type": ["array", "string"]
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["file_patterns"],
+      "properties": {
+        "file_patterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "ignore_in_fenced_blocks": { "type": "boolean" }
+      }
+    },
+    "context_rules": {
+      "type": "object",
+      "properties": {
+        "skip_if_line_starts_with": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "skip_if_path_matches": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "skip_if_fenced_block_lang_in": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "weight_override": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "fix": {
+      "type": "object",
+      "properties": {
+        "auto": { "type": "boolean" },
+        "description": { "type": "string" }
+      }
+    },
+    "status": {
+      "enum": ["stable", "experimental", "deprecated"]
+    },
+    "since": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "default_active": { "type": "boolean" }
+  }
+}
