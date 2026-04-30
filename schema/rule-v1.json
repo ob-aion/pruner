@@ -65,7 +65,8 @@
             "codepoint-range",
             "homoglyph-instruction",
             "frontmatter-validator",
-            "pep723-validator"
+            "pep723-validator",
+            "tool-grant-validator"
           ]
         },
         "value": { "type": "string" },

@@ -10,6 +10,7 @@ from pruner_wrapper.matchers.frontmatter_validator import scan_frontmatter
 from pruner_wrapper.matchers.homoglyph_matcher import scan_homoglyph
 from pruner_wrapper.matchers.pep723_validator import scan_pep723
 from pruner_wrapper.matchers.regex_matcher import scan_regex
+from pruner_wrapper.matchers.tool_grant_validator import scan_tool_grant
 from pruner_wrapper.types import Finding, Rule
 
 MatcherFn = Callable[[Rule, str, str], list[Finding]]
@@ -22,6 +23,7 @@ MATCHERS: dict[str, MatcherFn] = {
     "homoglyph-instruction": scan_homoglyph,
     "frontmatter-validator": scan_frontmatter,
     "pep723-validator": scan_pep723,
+    "tool-grant-validator": scan_tool_grant,
 }
 
 
@@ -44,4 +46,5 @@ __all__ = [
     "scan_homoglyph",
     "scan_pep723",
     "scan_regex",
+    "scan_tool_grant",
 ]
