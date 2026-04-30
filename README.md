@@ -19,22 +19,54 @@ Coroboros's attestation chain for agent skill repositories.
 
 `Detection: cisco-ai-skill-scanner. Policy: coroboros. Signature: Sigstore.`
 
-- [What it does](#what-it-does)
+- [Why now](#why-now)
+- [What Pruner is](#what-pruner-is)
+- [Why a wrapper, not another scanner](#why-a-wrapper-not-another-scanner)
+- [Code inside skills](#code-inside-skills)
+- [What Pruner is not](#what-pruner-is-not)
 - [Quick start](#quick-start)
-- [How it works](#how-it-works)
-- [Snyk second opinion](#snyk-second-opinion)
+- [Compared to](#compared-to)
+- [Reports and verification](#reports-and-verification)
 - [Coverage](#coverage)
-- [Reports and attestation](#reports-and-attestation)
+- [Snyk second opinion](#snyk-second-opinion)
+- [Vision](#vision)
 - [Governance](#governance)
 - [License](#license)
 
-## What it does
+## Why now
 
-Pruner audits agent skill repositories on the publishing side — before a `SKILL.md` ever reaches a consumer registry — and emits a signed report that travels with the release.
+The agent-skills ecosystem moved from launch (October 2025) to "registry already poisoned at scale" in roughly four months. Snyk's ToxicSkills audit (February 2026) found 36.82 % of 3,984 scanned skills carrying security flaws and 13.4 % critical issues. The ClawHavoc campaign (Antiy CERT, Koi Security, January–February 2026) placed 1,184 malicious skills across the ecosystem with single-IP C2. Cato CTRL weaponised Anthropic's official `slack-gif-creator` skill (December 2025) — minor edits triggered a remote-fetch-and-execute that delivered MedusaLocker, under a single user-consent trust model.
 
-Detection delegates to [`cisco-ai-defense/skill-scanner`](https://github.com/cisco-ai-defense/skill-scanner) (Apache-2.0, fully local, 13-pass static + bytecode + meta-analyzer). On top of that, the Coroboros policy pack adds twelve default-on rules covering documented gaps — the full Unicode-Tag arsenal, PEP-723 inline-deps without pins, identity-file writes, markdown-image data-exfil, and frontmatter conformance for the [agentskills.io](https://agentskills.io/) spec. Every finding maps to OWASP AST01–AST10 and OWASP LLM01–LLM10.
+Vendor responsibility lands on the user. Anthropic states explicitly: *"It is the user's responsibility to only use and execute trusted Skills."* Skills.sh runs a server-side audit at install through the CLI; a direct `git clone` bypasses it entirely, and once a skill is installed, drift is not re-scanned. The trust signal needs to live where the audit happens — at source, before publication.
 
-The output is a single `report-v1.json` bundled with SLSA provenance and a CycloneDX SBOM, signed via [`actions/attest-build-provenance`](https://github.com/actions/attest-build-provenance) and [`actions/attest-sbom`](https://github.com/actions/attest-sbom) using public-good Sigstore. Consumers verify with `gh attestation verify` — no Coroboros services in the trust path.
+## What Pruner is
+
+A composite GitHub Action that runs at the publisher's CI before a skill release ships. It produces a single trust artefact — `report-v1.json` plus a CycloneDX SBOM and SLSA build provenance, signed with public-good [Sigstore](https://www.sigstore.dev/) and GitHub OIDC — attached to every release tag. Consumers verify with `gh attestation verify`; no Coroboros service sits in the trust path.
+
+Output is deterministic at v0.1. No LLM keys required. No telemetry.
+
+## Why a wrapper, not another scanner
+
+[`cisco-ai-defense/skill-scanner`](https://github.com/cisco-ai-defense/skill-scanner) is excellent OSS. Apache-2.0, fully local, thirteen-pass static analyser plus bytecode, behavioural dataflow, meta-analyser, and an optional LLM-as-judge. Rebuilding it would burn months for a strictly worse outcome. Pruner pins it as the detection backend and adds the four things it does not surface as discrete signals:
+
+- **agentskills.io frontmatter conformance** (`FC001`–`FC005`) — kebab-case names, description length, custom-fields-under-metadata, the Coroboros house rule against `metadata.version` (skill versioning is repo-tag-driven), and SPDX licence validation.
+- **Identity-file write protection** (`PI-IDFILE-001`) — scripts that write to `AGENTS.md`, `MEMORY.md`, `SOUL.md`, `~/.bashrc`, `.cursorrules`, `.claude/settings.json`, `CLAUDE.md`. The ClawHavoc session-persistent backdoor pattern.
+- **PEP-723 inline-deps unpinned** (`PI-PEP723-001`), **markdown-image data-exfil** (`PI-MDIMG-001`), **webhook exfil** (`PI-EXFIL-001`), **remote-fetch-and-execute** (`PI-EXFIL-002`), **allowed-tools-vs-script mismatch** (`PI-PERM-001`) — the supply-chain and permissions families documented in the OWASP Agentic Skills Top 10 and the Maloyan / Namiot SoK (arXiv:2601.17548).
+- **Unicode codepoint families as named rules** (`PI-UNI-001` Tag block, `PI-UNI-002` variation selectors, `PI-UNI-003` bidi override, `PI-UNI-004` homoglyph instruction tokens, `PI-UNI-005` zero-width clusters) — Cisco catches these internally; Pruner exposes each as a discrete, OWASP-mapped signal that downstream consumers can audit independently.
+
+The novel contribution is the trust artefact, not the scanner. The scanner is intentionally swappable — `docs/why-cisco.md` documents the swap path. The artefact spec (`report-v1` + SBOM + in-toto attestations) is what travels with the skill.
+
+## Code inside skills
+
+Skills routinely ship code: shell scripts, Python helpers, JS / TS hooks. Static analysis of that code is delegated entirely to Cisco's subprocess — Python AST, JS / TS, bash pipeline-analyser with taint flow, bytecode disassembly, Office macros, PDF structural analysis. Pruner does not re-implement bandit, ruff, semgrep, or shellcheck.
+
+The Coroboros pack adds patterns Cisco does not surface as discrete rules: codepoint scans, frontmatter validators, PEP-723 metadata checks, identity-file path matching, webhook / pastebin / tunnel signature regexes, remote-fetch-and-execute patterns, and the cross-file allowed-tools-vs-scripts mismatch. The split is deliberate — Cisco's engine is the SAST surface, the Coroboros pack is the skill-specific posture surface.
+
+## What Pruner is not
+
+- **Not a runtime guard.** Pruner runs at the publisher's CI, not inside a loaded agent. For consumer-side runtime auditing, see [`affaan-m/agentshield`](https://github.com/affaan-m/agentshield) (MIT, TypeScript, three-agent Opus pipeline that audits `.claude/` config, MCP servers, and hooks). Anthropic and skills.sh provide the install-time audit hook.
+- **Not a live red-team tool.** Probing a deployed agent with adversarial prompts is the job of [NVIDIA garak](https://github.com/NVIDIA/garak), [promptfoo](https://github.com/promptfoo/promptfoo), or [Microsoft PyRIT](https://github.com/Azure/PyRIT). Those tools require a runnable agent endpoint; many skill repos ship none.
+- **Not a proprietary cloud-uplinked engine.** Cisco runs fully local; Pruner runs fully offline by default. [`snyk/agent-scan`](https://github.com/snyk/agent-scan) is a strong scanner but requires `SNYK_TOKEN` and uplinks scan content to Snyk cloud — incompatible with air-gapped or regulated workflows. Pruner accepts it as an opt-in second opinion (see [Snyk second opinion](#snyk-second-opinion)).
 
 ## Quick start
 
@@ -57,7 +89,7 @@ permissions:
 
 jobs:
   audit:
-    uses: ob-aion/pruner/.github/workflows/reusable-full-scan.yml@0.1.3
+    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.0
     with:
       fail-on: medium
       skill-pattern: 'skills/*/SKILL.md'
@@ -65,39 +97,48 @@ jobs:
 
 Templates for minimal and full integrations live in [`templates/`](./templates/). Consumer integration walkthrough: [`docs/consumer-integration.md`](./docs/consumer-integration.md).
 
-## How it works
+## Compared to
 
-Three stages, in sequence:
+Each tool answers a different question; the comparison is honest, not competitive.
 
-1. **Detection.** The composite action installs a SHA-pinned `cisco-ai-skill-scanner` in deterministic mode (no LLM keys required), runs `gitleaks` for secrets, and `actionlint` for the audited repo's own workflows.
-2. **Coroboros policy pack.** Twelve default-on rules — frontmatter conformance (FC001–FC005), Unicode-Tag arsenal (PI-UNI-001..004), supply-chain hygiene (PI-PEP723-001, PI-IDFILE-001, PI-MDIMG-001). Twelve opt-in PD rules for prompt-defense posture on generalist-agent prompt files.
-3. **Attestation.** SBOM via `anchore/sbom-action`, build provenance via `actions/attest-build-provenance`, SBOM signing via `actions/attest-sbom`. Output is a single `report-v1.json` plus the signed bundle, attached to the GitHub release.
+| Tool | Form | Where it runs | License | Network |
+| --- | --- | --- | --- | --- |
+| **Pruner** (this repo) | composite GitHub Action | publisher CI | Apache-2.0 | offline by default |
+| [`cisco-ai-defense/skill-scanner`](https://github.com/cisco-ai-defense/skill-scanner) | CLI + reusable workflow | local or CI | Apache-2.0 | offline (LLM keys optional) |
+| [`snyk/agent-scan`](https://github.com/snyk/agent-scan) | CLI | local + Snyk cloud | Apache-2.0 | `SNYK_TOKEN` required |
+| [`affaan-m/agentshield`](https://github.com/affaan-m/agentshield) | CLI + GitHub Action + plugin | consumer agent setup | MIT | `ANTHROPIC_API_KEY` for deep analysis |
+| [skills.sh audit](https://skills.sh/) (Gen ATH × Socket × Snyk) | server-side, via `npx skills add` | install time | mixed (closed + commercial) | required |
 
-Architecture deep-dive: [`docs/architecture.md`](./docs/architecture.md). Why Cisco as the detection backend: [`docs/why-cisco.md`](./docs/why-cisco.md).
+Pruner answers *"is this skill safe to ship?"* — and produces a portable, signed answer that travels with the release tag. AgentShield answers *"is this agent setup safe to load?"* The static scanners answer *"what does deep code analysis say about this artefact?"* The skills.sh audit answers *"is this safe to install through the registry CLI?"* — and is bypassed by `git clone`.
 
-## Snyk second opinion
+## Reports and verification
 
-Optional. `ob-aion/pruner` accepts `snyk/agent-scan` as a second-opinion runner — set `with-snyk: true` and provide `SNYK_TOKEN`. Findings land in the report's `tools[]` block with `mode: second-opinion, blocking: false`.
+Every release attaches `pruner-report.zip` to its GitHub release page, containing `report-v1.json`, the aggregated SARIF, the CycloneDX SBOM, the OpenSSF Scorecard JSON, the in-toto attestations, and the badge SVG. Verification:
 
-Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap default. Skip for private or regulated content. Without a token, the step is silently skipped; the workflow does not fail. Setup walkthrough: [`docs/consumer-integration.md#snyk-second-opinion`](./docs/consumer-integration.md#snyk-second-opinion).
+```bash
+gh release download <tag> --repo <owner>/<repo> --pattern 'pruner-report.zip'
+gh attestation verify pruner-report.zip --owner <owner>
+```
+
+Walkthrough: [`docs/verify-a-report.md`](./docs/verify-a-report.md). Schemas at [`schema/`](./schema/) — JSON Schema 2020-12.
 
 ## Coverage
 
-Honest matrix of what Cisco catches × what the Coroboros pack adds × what nothing covers: [`docs/coverage-matrix.md`](./docs/coverage-matrix.md). FP-audit on three public skill repos: [`docs/fp-audit.md`](./docs/fp-audit.md).
+Honest matrix of what Cisco catches × what the Coroboros pack adds × what nothing covers: [`docs/coverage-matrix.md`](./docs/coverage-matrix.md). FP-audit on three public skill repos (`anthropics/skills`, `vercel-labs/agent-skills`, `coroboros/agent-skills`): [`docs/fp-audit.md`](./docs/fp-audit.md). Threat model and disclosure: [`docs/threat-model.md`](./docs/threat-model.md).
 
-## Reports and attestation
+## Snyk second opinion
 
-Every release emits `pruner-report.zip` to its GitHub release page, containing `report-v1.json`, the aggregated SARIF, the CycloneDX SBOM, the OpenSSF Scorecard JSON, the in-toto attestation, and the badge SVG. Verification:
+Optional. Set `with-snyk: true` and provide `SNYK_TOKEN`; Snyk findings land in the report's `tools[]` block with `mode: second-opinion, blocking: false`. Without a token the step is silently skipped. Setup walkthrough: [`docs/consumer-integration.md#snyk-second-opinion`](./docs/consumer-integration.md#snyk-second-opinion). Read the network-egress trade-off in [`docs/why-cisco.md#considered-alternatives`](./docs/why-cisco.md#considered-alternatives) before enabling.
 
-```bash
-gh attestation verify pruner-report.zip --owner ob-aion
-```
+## Vision
 
-Walkthrough: [`docs/verify-a-report.md`](./docs/verify-a-report.md).
+The trust artefact is the deliverable. The scanner is replaceable. The intent for 1.0 is to submit `report-v1` and the attestation bundle shape to the [OpenSSF Working Group on Supply-Chain Integrity](https://openssf.org/community/supply-chain-integrity/) as a candidate spec contribution, and to register Pruner in the Sigstore landscape.
+
+The bet is structural: a portable, signed, regulator-friendly trust artefact at the publisher boundary closes the gap that runtime guards and install-time audits structurally cannot — direct repo clones, drift between install and use, and registry bypass.
 
 ## Governance
 
-Apache-2.0. Solo maintainer at v0.1; bus factor declared in [`BUS_FACTOR.md`](./BUS_FACTOR.md). Rule-pack and release policy: [`GOVERNANCE.md`](./GOVERNANCE.md). Threat model and disclosure: [`SECURITY.md`](./SECURITY.md).
+Apache-2.0. Solo maintainer at v0.x; bus factor declared in [`BUS_FACTOR.md`](./BUS_FACTOR.md). Rule-pack and release policy: [`GOVERNANCE.md`](./GOVERNANCE.md). Threat model and disclosure: [`SECURITY.md`](./SECURITY.md). Contributing: [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## License
 

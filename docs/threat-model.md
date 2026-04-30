@@ -36,14 +36,15 @@ Output is deterministic at v0.1 — no LLM keys required.
 
 ## Out of scope
 
-- **Runtime monitoring** of an agent that has already loaded a skill (consumer-side; AgentShield's territory).
+- **Runtime monitoring** of an agent that has already loaded a skill — different trust boundary. See [`affaan-m/agentshield`](https://github.com/affaan-m/agentshield) (MIT, TypeScript, three-agent Opus pipeline) for consumer-side `.claude/` config, MCP server, and hook auditing. Pruner answers *"is this skill safe to ship?"*; AgentShield answers *"is this agent setup safe to load?"*. No overlap, complementary tools.
 - **Sandboxed execution** of scanned content — Pruner does not run the scripts it audits.
-- **Multimodal injection through fetched URLs** — Pruner flags external URL references in `SKILL.md` but does not fetch them. `vercel-labs/skills` runs this at install time.
-- **Latent semantic activation** — delayed-trigger backdoors that activate after N invocations or specific weekday/locale conditions are not statically visible. Cisco's behavioral pass catches some; the rest need runtime guards.
+- **Multimodal injection through fetched URLs** — Pruner flags external URL references in `SKILL.md` but does not fetch them. `vercel-labs/skills` runs the install-time audit (Gen ATH × Socket × Snyk) which is bypassed by direct `git clone` — Pruner's source-side placement closes that gap.
+- **Latent semantic activation** — delayed-trigger backdoors that activate after N invocations or specific weekday / locale conditions are not statically visible. Cisco's behavioural pass catches some; the rest need runtime guards.
 - **Office macros, polyglot files, encrypted ZIPs** in `assets/` — Cisco covers via YARA; Pruner does not duplicate.
-- **Taint / dataflow analysis** — delegated to Cisco.
-- **MCP server runtime behavior** — Snyk + AgentShield.
-- **Image / PDF OCR injection** — Cisco scans some; full multimodal is out of v0.1 scope.
+- **Taint / dataflow analysis** — delegated to Cisco's pipeline-analyser.
+- **MCP server runtime behaviour** — `snyk/agent-scan` (CLI, requires `SNYK_TOKEN`) and AgentShield (LLM-orchestrated). Pruner does not run agent-side probes.
+- **Live agent red-teaming** — out of v0.x scope. Tools that probe a runnable agent: NVIDIA garak, promptfoo, Microsoft PyRIT. Phase-4 reconsideration documented in `brain/research/pruner/NEXT.md` (private roadmap).
+- **Image / PDF OCR injection** — Cisco scans some; full multimodal is out of v0.x scope.
 
 Per-rule × per-tool coverage matrix: [`docs/coverage-matrix.md`](./coverage-matrix.md).
 
