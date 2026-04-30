@@ -58,9 +58,9 @@ The novel contribution is the trust artefact, not the scanner. The scanner is in
 
 ## Code inside skills
 
-Skill repositories ship code under `scripts/` — shell, Python, JS, TS. Static analysis of all of it is delegated to Cisco's subprocess: Python AST, JS / TS, bash pipeline-analyser with taint flow, bytecode disassembly, Office macros, PDF structural. Pruner does not re-implement bandit, ruff, semgrep, or shellcheck.
+Skill repositories ship code under `scripts/` — shell, Python, JS, TS. Cisco's subprocess analyses all of it: Python AST, JS / TS, bash pipeline-analyser with taint flow, bytecode disassembly, Office macros, PDF structural. Pruner does not re-implement bandit, ruff, semgrep, or shellcheck.
 
-The Coroboros pack adds patterns Cisco does not surface as discrete rules: codepoint scans, frontmatter validators, PEP-723 metadata checks, identity-file path matching, webhook / pastebin / tunnel signature regexes, remote-fetch-and-execute patterns, and the cross-file allowed-tools-vs-scripts mismatch. The split is deliberate — Cisco's engine is the SAST surface, the Coroboros pack is the skill-specific posture surface.
+The Coroboros pack adds patterns Cisco does not surface as discrete rules. Codepoint scans, frontmatter validators, PEP-723 metadata, identity-file path matching, webhook / tunnel signatures, remote-fetch-and-execute, and the cross-file allowed-tools-vs-scripts mismatch. The split is deliberate — Cisco's engine is the SAST surface, the Coroboros pack is the skill-specific posture surface.
 
 ## What Pruner is not
 
@@ -132,9 +132,9 @@ Optional. Set `with-snyk: true` and provide `SNYK_TOKEN`; Snyk findings land in 
 
 ## Vision
 
-The trust artefact is the deliverable. The scanner is replaceable. At 1.0: submit `report-v1` and the attestation bundle shape as a candidate spec contribution to the [OpenSSF Working Group on Supply-Chain Integrity](https://openssf.org/community/supply-chain-integrity/). Register Pruner in the Sigstore landscape alongside.
+The trust artefact is the deliverable; the scanner is replaceable. At 1.0: submit `report-v1` and the attestation bundle shape as a candidate spec contribution to the [OpenSSF Working Group on Supply-Chain Integrity](https://openssf.org/community/supply-chain-integrity/). Register Pruner in the Sigstore landscape alongside.
 
-A signed trust artefact at the publisher boundary closes two gaps that runtime guards and install-time audits cannot reach: direct git-clone of a skill repository bypasses any registry-side audit, and once a skill is installed, post-publish drift is never re-scanned.
+The publisher-boundary placement closes two gaps that runtime guards and install-time audits cannot reach. First: direct git-clone of a skill repository bypasses any registry-side audit. Second: once a skill is installed, post-publish drift is never re-scanned.
 
 ## Governance
 

@@ -15,7 +15,7 @@ CVE requested via GitHub Security Advisories when warranted.
 
 ## Scope
 
-Pruner is a CI-only audit tool that runs on the publishing side of an agent skill repository. It does not execute scanned skills, does not load them into a runtime, does not phone home, and does not require network access for the deterministic phases.
+Pruner is a CI-only audit tool that runs on the publishing side of an agent skill repository. It does not execute scanned skills or load them into a runtime. The deterministic phases need no network egress and no telemetry.
 
 Full threat model — what's in scope, what's out, and what nothing covers: [`docs/threat-model.md`](./docs/threat-model.md). Coverage matrix per rule: [`docs/coverage-matrix.md`](./docs/coverage-matrix.md). Audit-the-auditor (Pruner's own attack surface and self-defenses): [`docs/threat-model.md#audit-the-auditor`](./docs/threat-model.md#audit-the-auditor).
 

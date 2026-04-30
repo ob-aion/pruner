@@ -2,7 +2,7 @@
 
 Anyone with a Pruner release asset can verify it independently — no Coroboros services in the trust path.
 
-## What you're verifying
+## What is verified
 
 `pruner-report.zip` contains:
 
@@ -52,7 +52,7 @@ The following policy criteria were verified:
 - The signature was issued by public-good Sigstore + GitHub's OIDC issuer.
 - The bundle SHA matches the one recorded in the attestation.
 
-## What success does NOT mean
+## Limits of the guarantee
 
 - That the audited skill is safe to run on arbitrary inputs in arbitrary agents.
 - That the report's findings classification is correct (read `report-v1.json`'s `policy_evaluation` and `findings[]`).

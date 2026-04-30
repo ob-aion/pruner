@@ -63,7 +63,11 @@ A signed attestation that the audited repo, at the scanned commit:
 - Passed gitleaks and actionlint against the audited surface.
 - Has a verifiable SLSA build provenance and a CycloneDX SBOM.
 
-It does NOT mean: the skill is safe to run on arbitrary inputs in arbitrary agents; that the skill is free of latent semantic backdoors; that the skill is compliant with EU AI Act / NIST / SOC 2.
+It does not mean:
+
+- the skill is safe to run on arbitrary inputs in arbitrary agents;
+- the skill is free of latent semantic backdoors;
+- the skill is compliant with EU AI Act / NIST / SOC 2.
 
 ## False-positive discipline
 

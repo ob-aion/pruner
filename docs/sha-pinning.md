@@ -2,8 +2,8 @@
 
 Every third-party `uses:` line in this repo is SHA-pinned with a `# vX.Y.Z` comment. Two kinds of git object can sit behind a 40-char hex SHA:
 
-1. **A commit object.** What you want.
-2. **An annotated-tag object.** What you do not want.
+1. **A commit object.** The intended pin.
+2. **An annotated-tag object.** The pitfall.
 
 Both are valid SHAs and both `git checkout` cleanly. GitHub Actions accepts either at runtime — the workflow runs. The OpenSSF Scorecard webapp does not. When it uploads results, it checks the pinned SHA resolves to a real commit in the upstream repository. Tag-object SHAs are rejected with a 400 / `imposter commit` error. The SARIF still lands in Code Scanning but the published score on `securityscorecards.dev` never updates.
 
@@ -11,7 +11,7 @@ This is how `0.1.0` through `0.1.3` shipped with `ossf/scorecard-action@99c09fe9
 
 ## Resolve a tag to its commit
 
-When pinning a new action or bumping an existing one, never copy the SHA reported by `git ls-remote` against an annotated-tag ref — that SHA is the tag object. Instead:
+When pinning a new action or bumping an existing one, never copy the SHA reported by `git ls-remote` against an annotated-tag ref. That SHA is the tag object. Instead:
 
 ```bash
 TAG=v2.4.3

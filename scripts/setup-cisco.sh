@@ -30,7 +30,6 @@ if [[ -n "${PRUNER_CISCO_VENV:-}" ]]; then
     source "${PRUNER_CISCO_VENV}/bin/activate"
 fi
 
-pip install --quiet --upgrade pip
 pip install --quiet "cisco-ai-skill-scanner==${PINNED_VERSION}"
 
 # Locate the installed LICENSE file.
