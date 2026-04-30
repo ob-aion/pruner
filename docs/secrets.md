@@ -6,7 +6,7 @@ Pruner runs offline by default. The deterministic pipeline — Cisco subprocess,
 
 Used by [`.github/workflows/scorecard.yml`](../.github/workflows/scorecard.yml). The default `GITHUB_TOKEN` cannot read classic branch-protection rules, so OpenSSF Scorecard's Branch-Protection check returns `-1` (inconclusive) without a fine-grained PAT.
 
-The workflow resolves `repo_token: ${{ secrets.SCORECARD_TOKEN || secrets.GITHUB_TOKEN }}` — it falls back to `GITHUB_TOKEN` when the secret is unset and behaves as before, at the cost of an inconclusive Branch-Protection result.
+The workflow resolves `repo_token: ${{ secrets.SCORECARD_TOKEN || secrets.GITHUB_TOKEN }}`. Without the secret it falls back to `GITHUB_TOKEN` and behaves as before. Branch-Protection stays inconclusive in that case.
 
 ### Setup
 

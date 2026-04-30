@@ -6,7 +6,7 @@ Post-release housekeeping. Lifts two findings on the OpenSSF Scorecard baseline.
 
 - **Dropped `pip install --quiet --upgrade pip`** from `scripts/setup-cisco.sh`. `actions/setup-python` already provides a recent pip; the explicit upgrade was a redundant `pipCommand` finding for Scorecard's Pinned-Dependencies check.
 - **Added a `SCORECARD_TOKEN` fallback** to `.github/workflows/scorecard.yml`: `repo_token: ${{ secrets.SCORECARD_TOKEN || secrets.GITHUB_TOKEN }}`. The default `GITHUB_TOKEN` cannot read classic branch-protection rules, which scored Branch-Protection at `-1` (inconclusive). Wiring an optional fine-grained PAT (with `Administration: read` scope on the repo, stored as the `SCORECARD_TOKEN` secret) lifts the check to a real score; in the secret's absence the workflow falls back to `GITHUB_TOKEN` and behaves as before.
-- **`docs/secrets.md` documents both repository secrets** — `SCORECARD_TOKEN` (maintainer-side) and `SNYK_TOKEN` (consumer-side, opt-in) — with setup walkthroughs, scope discipline, and the explicit "no token required for verification" guarantee. `CONTRIBUTING.md` and `docs/consumer-integration.md` cross-reference it.
+- **`docs/secrets.md` consolidates token discipline.** Covers `SCORECARD_TOKEN` (maintainer-side) and `SNYK_TOKEN` (consumer-side, opt-in), with the setup walkthrough and the explicit guarantee that verification needs no token. `CONTRIBUTING.md` and `docs/consumer-integration.md` cross-reference it.
 
 ## v0.2.0 - 30/04/2026
 
