@@ -95,7 +95,7 @@ Add to your skill-author checklist:
 
 ## Snyk second opinion
 
-Optional. `ob-aion/pruner` accepts `snyk/agent-scan` as a second-opinion runner; off by default.
+Optional. `ob-aion/pruner` accepts `snyk/agent-scan` as a second-opinion runner; off by default. Token discipline: [`docs/secrets.md`](./secrets.md).
 
 Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap default. Use only for content not subject to private or regulated handling. Background on the trade-off: [`docs/why-cisco.md#considered-alternatives`](./why-cisco.md#considered-alternatives).
 

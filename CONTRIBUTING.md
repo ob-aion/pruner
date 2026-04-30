@@ -25,6 +25,10 @@ The Cisco engine is installed via pipx separately:
 pipx install "cisco-ai-skill-scanner==2.0.9"
 ```
 
+## Repository secrets
+
+Pruner runs offline by default. Two optional secrets opt into specific features — `SCORECARD_TOKEN` (maintainer-side, lifts OpenSSF Scorecard's Branch-Protection check from `-1`) and `SNYK_TOKEN` (consumer-side, opt-in second-opinion runner). Setup walkthrough and scope discipline: [`docs/secrets.md`](./docs/secrets.md).
+
 ## Testing
 
 Run before every commit:

@@ -26,10 +26,10 @@ jobs:
           results_file: results.sarif
           results_format: sarif
           # Optional fine-grained PAT with `Administration: read` scope on the
-          # repo; lifts Branch-Protection from -1 (inconclusive) to a real score.
-          # Falls back to GITHUB_TOKEN when the secret is unset, which keeps
-          # every other check working at the cost of an inconclusive
-          # Branch-Protection result.
+          # repo; lifts Branch-Protection from -1 (inconclusive) to a real
+          # score. Falls back to GITHUB_TOKEN when the secret is unset, which
+          # keeps every other check working at the cost of an inconclusive
+          # Branch-Protection result. See docs/secrets.md for setup.
           repo_token: ${{ secrets.SCORECARD_TOKEN || secrets.GITHUB_TOKEN }}
           publish_results: true
 
