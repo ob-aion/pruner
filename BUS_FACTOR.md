@@ -2,10 +2,10 @@
 
 Honest declaration of maintainer capacity, in keeping with Coroboros's "ship signal, not marketing" posture.
 
-## Current state — 0.2.0
+## Current state
 
 - **Bus factor: 1.** Single maintainer: `@ob-aion`.
-- **Co-maintainer signal:** open at `help-wanted: co-maintainer` since v0.2.0.
+- **Co-maintainer signal:** an open `help-wanted: co-maintainer` issue.
 - **Coverage if maintainer disappears:** the repo is Apache-2.0, every dependency is SHA-pinned, and the trust artefacts (signed report bundle, in-toto attestation) are independently verifiable via `gh attestation verify` against public-good Sigstore. Existing releases keep working. No new releases ship.
 
 ## Why this is tolerable at 0.x
