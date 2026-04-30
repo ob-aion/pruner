@@ -132,9 +132,9 @@ Optional. Set `with-snyk: true` and provide `SNYK_TOKEN`; Snyk findings land in 
 
 ## Vision
 
-The trust artefact is the deliverable. The scanner is replaceable. At 1.0: submit `report-v1` and the attestation bundle shape as a candidate spec contribution to the [OpenSSF Working Group on Supply-Chain Integrity](https://openssf.org/community/supply-chain-integrity/). Register Pruner in the Sigstore landscape alongside.
+The trust artefact is the deliverable; the scanner is replaceable. At 1.0: submit `report-v1` and the attestation bundle shape as a candidate spec contribution to the [OpenSSF Working Group on Supply-Chain Integrity](https://openssf.org/community/supply-chain-integrity/). Register Pruner in the Sigstore landscape alongside.
 
-A signed trust artefact at the publisher boundary closes two gaps that runtime guards and install-time audits cannot reach. First: direct git-clone of a skill repository bypasses any registry-side audit. Second: once a skill is installed, post-publish drift is never re-scanned.
+The publisher-boundary placement closes two gaps that runtime guards and install-time audits cannot reach. First: direct git-clone of a skill repository bypasses any registry-side audit. Second: once a skill is installed, post-publish drift is never re-scanned.
 
 ## Governance
 

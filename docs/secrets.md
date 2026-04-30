@@ -23,11 +23,7 @@ The workflow resolves `repo_token: ${{ secrets.SCORECARD_TOKEN || secrets.GITHUB
 
 ## `SNYK_TOKEN` (consumer-side, opt-in)
 
-Used by the composite action's optional `snyk-agent-scan` second-opinion runner. Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap default. Use only for content not subject to private or regulated handling.
-
-Setup walkthrough: [`docs/consumer-integration.md#snyk-second-opinion`](./consumer-integration.md#snyk-second-opinion). Background on the trade-off: [`docs/why-cisco.md#considered-alternatives`](./why-cisco.md#considered-alternatives).
-
-Without `SNYK_TOKEN`, the `snyk-run` step is silently skipped; the workflow does not fail.
+Used by the composite action's optional `snyk-agent-scan` second-opinion runner. Setup walkthrough, cloud-uplink trade-off, and behaviour when the secret is unset: [`docs/consumer-integration.md#snyk-second-opinion`](./consumer-integration.md#snyk-second-opinion).
 
 ## What no token covers
 
