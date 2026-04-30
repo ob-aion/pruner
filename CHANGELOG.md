@@ -14,6 +14,7 @@ Pack expansion, attestation guard rails, scan workflow rename.
 - **Added rule `PI-PERM-001-allowed-tools-mismatch`** — flags a `SKILL.md` whose `allowed-tools` declaration omits `Bash` (or a wildcard equivalent) yet ships `scripts/*.py` that import `subprocess`/`pty` or `scripts/*.sh` containing executable lines. New cross-file matcher type `tool-grant-validator`.
 - **Added matcher type `tool-grant-validator`** (`schema/rule-v1.json` enum + `wrapper/src/pruner_wrapper/matchers/tool_grant_validator.py`). Cross-file matchers receive the scan-tree root via the new `pack_runner.get_scan_context()` helper.
 - **Extended `examples/vulnerable-skill`** with tripwires for the four new rules and updated `EXPECTATIONS.md` cross-walk. `.pruner-ignore.yml` adds matching allowlist entries with explicit justifications.
+- **Schema enrichment** (`schema/rule-v1.json`): three optional taxonomy fields — `mitre_atlas` (array of `AML.T####(.###)?` technique IDs), `nist_ai_rmf` (array of `GV/MP/MS/MG-N(.M)*` subcategory references), `taxonomy_3d` (Maloyan/Namiot SoK 3-D — `delivery` × `modality` × `propagation` enums). Backwards-compatible — unknown keys were already tolerated; existing rules backfill incrementally in 0.2.x. New 0.2.0 rules (PI-UNI-005, PI-EXFIL-001/002, PI-PERM-001) ship populated.
 
 ## v0.1.3 - 29/04/2026
 

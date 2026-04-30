@@ -5,6 +5,14 @@ severity: critical
 category: prompt-injection
 owasp_ref: LLM05
 owasp_ast: AST07
+mitre_atlas:
+  - AML.T0010.001
+nist_ai_rmf:
+  - MS-2.10
+taxonomy_3d:
+  delivery: runtime-fetched
+  modality: code
+  propagation: transitive
 pattern:
   type: regex
   value: '(?i)((curl|wget|iwr|invoke-webrequest)\b[^|\n]*\|\s*(bash|sh|zsh|iex|invoke-expression)\b|\b(eval|bash|sh|zsh)\s+["'']?[\$<]\(\s*(curl|wget)\b)'

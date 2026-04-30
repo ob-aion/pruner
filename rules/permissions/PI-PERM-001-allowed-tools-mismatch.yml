@@ -5,6 +5,14 @@ severity: high
 category: permissions
 owasp_ref: LLM08
 owasp_ast: AST02
+mitre_atlas:
+  - AML.T0010.001
+nist_ai_rmf:
+  - GV-1.5
+taxonomy_3d:
+  delivery: in-source
+  modality: code
+  propagation: container-bound
 pattern:
   type: tool-grant-validator
 rationale: |

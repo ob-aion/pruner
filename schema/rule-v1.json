@@ -54,6 +54,35 @@
       "type": ["string", "null"],
       "pattern": "^AST(0[1-9]|10)$"
     },
+    "mitre_atlas": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^AML\\.T[0-9]{4}(\\.[0-9]{3})?$"
+      }
+    },
+    "nist_ai_rmf": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(GV|MP|MS|MG)-[0-9]+(\\.[0-9]+)*$"
+      }
+    },
+    "taxonomy_3d": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "delivery": {
+          "enum": ["in-source", "indirect", "runtime-fetched"]
+        },
+        "modality": {
+          "enum": ["text", "code", "structured-data", "binary"]
+        },
+        "propagation": {
+          "enum": ["container-bound", "persistent", "transitive"]
+        }
+      }
+    },
     "pattern": {
       "type": "object",
       "required": ["type"],

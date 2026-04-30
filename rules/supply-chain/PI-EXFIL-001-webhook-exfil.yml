@@ -5,6 +5,14 @@ severity: high
 category: prompt-injection
 owasp_ref: LLM06
 owasp_ast: AST06
+mitre_atlas:
+  - AML.T0024
+nist_ai_rmf:
+  - MS-2.10
+taxonomy_3d:
+  delivery: in-source
+  modality: code
+  propagation: transitive
 pattern:
   type: regex
   value: '(?i)(discord\.com/api/webhooks|hooks\.slack\.com/services|pastebin\.com/[A-Za-z0-9]+|paste\.ee/[a-z]/|transfer\.sh/|requestbin\.(com|net)|webhook\.site/|\bngrok\.(io|app)\b)'

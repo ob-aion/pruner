@@ -5,6 +5,14 @@ severity: high
 category: prompt-injection
 owasp_ref: LLM01
 owasp_ast: AST01
+mitre_atlas:
+  - AML.T0051.000
+nist_ai_rmf:
+  - MS-2.6
+taxonomy_3d:
+  delivery: in-source
+  modality: text
+  propagation: container-bound
 pattern:
   type: codepoint-range
   ranges:
