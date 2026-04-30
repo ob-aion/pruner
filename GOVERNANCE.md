@@ -1,4 +1,4 @@
-**Lead maintainer:** `@ob-aion`. Bus-factor disclosure in [`BUS_FACTOR.md`](./BUS_FACTOR.md). Co-maintainer signal: active `help-wanted: co-maintainer` issue from v0.1.0 — Cisco upstream-monitoring wants more than one set of eyes.
+**Lead maintainer:** `@ob-aion`. Bus-factor disclosure in [`BUS_FACTOR.md`](./BUS_FACTOR.md). Co-maintainer signal: an active `help-wanted: co-maintainer` issue — Cisco upstream-monitoring wants more than one set of eyes.
 
 DCO required (`Signed-off-by:` trailer); no CLA.
 

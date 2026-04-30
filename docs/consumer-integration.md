@@ -30,12 +30,12 @@ jobs:
       skill-pattern: 'skills/*/SKILL.md'
       report-output: ./.pruner
       scan-prompt-defense-posture: false
-    secrets: inherit   # SNYK_TOKEN if you want the opt-in second opinion
+    secrets: inherit   # SNYK_TOKEN for the opt-in second opinion
 ```
 
 ## Step 2 — Badges
 
-Add to your README:
+Add to the README:
 
 ```markdown
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/<owner>/<repo>/badge)](https://deps.dev/github/<owner>%2F<repo>)
@@ -46,7 +46,7 @@ At v0.1 the Pruner badge is committed-per-release SVG served from the latest rel
 
 ## Step 3 — SECURITY.md
 
-Copy the scaffold from [`templates/SECURITY.md.tmpl`](../templates/SECURITY.md.tmpl) to your repo root and fill in:
+Copy the scaffold from [`templates/SECURITY.md.tmpl`](../templates/SECURITY.md.tmpl) to the repo root and fill in:
 
 - Maintainer handle
 - SLA preferences (default 72h / 7d / 30d / 90d)
@@ -89,7 +89,7 @@ Schema: [`schema/policy-v1.json`](../schema/policy-v1.json). Failing policy fail
 
 ## Step 6 — Update CLAUDE.md / CONTRIBUTING.md
 
-Add to your skill-author checklist:
+Add to the skill-author checklist:
 
 > **Pruner runs on every PR and tag.** A failing Pruner blocks merge. Allowlist entries require a written justification in `.pruner-ignore.yml`.
 

@@ -20,7 +20,7 @@ Pruner keeps the engine surface in Cisco's hands. The Coroboros-owned code is a 
 - **Public attestation.** Verifiable signed bundle on every release means downstream consumers don't need a live maintainer to trust an existing artefact.
 - **Documented swap path.** `docs/why-cisco.md` describes how to replace the Cisco engine if needed (fork at last-good SHA or substitute with `snyk/agent-scan`).
 
-## What's NOT mitigated
+## Out of mitigation scope
 
 - New rules in response to fresh threat-landscape changes require a human deciding what to add.
 - FP-audit refinements on real consumer corpora require human classification.
@@ -30,7 +30,7 @@ Pruner keeps the engine surface in Cisco's hands. The Coroboros-owned code is a 
 
 1. Open a `rule-proposal` issue with rationale + fixtures + FP measurement.
 2. Open a `false-positive` issue when a rule fires on legitimate content; include a minimal reproducer.
-3. Comment on the `help-wanted: co-maintainer` issue if you want commit access.
+3. Interested contributors can comment on the `help-wanted: co-maintainer` issue for commit access.
 
 ## Funding
 

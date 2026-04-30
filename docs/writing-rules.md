@@ -13,7 +13,7 @@ category: prompt-injection                     # one of: prompt-injection, promp
 owasp_ref: LLM01                               # LLM01..LLM10 or null
 owasp_ast: AST01                               # AST01..AST10 or null
 pattern:
-  type: regex                                  # regex | absence-regex | codepoint-range | homoglyph-instruction | frontmatter-validator | pep723-validator
+  type: regex                                  # regex | absence-regex | codepoint-range | homoglyph-instruction | frontmatter-validator | pep723-validator | tool-grant-validator
   value: '<pattern body>'
 rationale: |
   Free text. Cite OWASP LLM/AST refs and primary research.
@@ -46,11 +46,12 @@ since: "0.1.0"
 | Type | Use for |
 |---|---|
 | `regex` | Plain text patterns. Compiled with `re.MULTILINE`. |
-| `absence-regex` | Triggers when the pattern is NOT found. Used by the PD pack (defensive language absent). Combine with `activation_gate`. |
+| `absence-regex` | Triggers when the pattern is absent. Used by the PD pack (defensive language absent). Combine with `activation_gate`. |
 | `codepoint-range` | Ranges of forbidden Unicode codepoints. Used by PI-UNI-001/002/003. |
 | `homoglyph-instruction` | Mixed-script lookalikes for instruction tokens. Used by PI-UNI-004. Confusables table is built-in. |
 | `frontmatter-validator` | Structural validation of YAML frontmatter. Used by FC001–FC005. Supports `field`+`must_match`, `field`+`min_length`, `field`+`max_length`, `field`+`must_match_spdx`, `field`+`must_be_absent`, `field`+`forbid_tokens`, `field`+`optional`, `forbid_top_level_fields_outside`, `field_path` (dotted). |
 | `pep723-validator` | PEP-723 inline-script metadata validation. Used by PI-PEP723-001. Supports `require_pin_operator`. |
+| `tool-grant-validator` | Cross-file matcher: SKILL.md frontmatter `allowed-tools` vs sibling `scripts/`. Used by PI-PERM-001. Reads the scan-tree root via `pack_runner.get_scan_context()`. |
 
 New pattern types are additive and require a minor bump of `schema/rule-v1.json`.
 

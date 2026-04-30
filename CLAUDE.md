@@ -69,7 +69,17 @@ pruner scan examples/benign-skill --without-cisco        # zero findings expecte
 
 ## Anti-scope
 
-Out of scope by decision: runtime monitoring; consumer-side `.claude/` config + MCP server + hook auditing — that is [`affaan-m/agentshield`](https://github.com/affaan-m/agentshield)'s territory (MIT, TypeScript, three-agent Opus 4.6 pipeline, requires `ANTHROPIC_API_KEY`); standalone semgrep / CodeQL / bandit / ruff / shellcheck (Cisco's subprocess covers all code SAST); LLM-in-the-loop detection by default (Pruner is deterministic at v0.x); telemetry of any kind; garak / promptfoo / Microsoft PyRIT agent-side red teaming (separate scope, not v0.x — those tools require a runnable agent endpoint); generic SAST. Full out-of-scope list lives in [`docs/threat-model.md#out-of-scope`](./docs/threat-model.md#out-of-scope).
+Out of scope by decision:
+
+- runtime monitoring
+- consumer-side `.claude/` config + MCP server + hook auditing — that is [`affaan-m/agentshield`](https://github.com/affaan-m/agentshield)'s territory (MIT, TypeScript, three-agent Opus 4.6 pipeline, requires `ANTHROPIC_API_KEY`)
+- standalone semgrep / CodeQL / bandit / ruff / shellcheck — Cisco's subprocess covers all code SAST
+- LLM-in-the-loop detection by default — Pruner is deterministic at v0.x
+- telemetry of any kind
+- garak / promptfoo / Microsoft PyRIT agent-side red teaming — separate scope, not v0.x; those tools need a runnable agent endpoint
+- generic SAST
+
+Full out-of-scope list: [`docs/threat-model.md#out-of-scope`](./docs/threat-model.md#out-of-scope).
 
 ## Lore vocabulary
 

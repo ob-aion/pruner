@@ -7,4 +7,4 @@ pruner scan examples/benign-skill --without-cisco --format json --output /tmp/be
 jq '.findings | length' /tmp/benign.json   # → 0
 ```
 
-If any finding appears, the regression is real — open a `false-positive` issue with the rule ID and the offending line.
+If any finding fires, the regression is real — open a `false-positive` issue with the rule ID and the offending line.

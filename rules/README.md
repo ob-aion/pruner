@@ -1,14 +1,15 @@
 # Coroboros policy pack
 
-Twelve default-on rules + twelve opt-in PD rules. Every rule conforms to [`schema/rule-v1.json`](../schema/rule-v1.json).
+Sixteen default-on rules + twelve opt-in PD rules. Every rule conforms to [`schema/rule-v1.json`](../schema/rule-v1.json).
 
-## Default-on (12)
+## Default-on (16)
 
 | Pillar | Rules |
 |---|---|
 | Frontmatter conformance | [`frontmatter-conformance/`](./frontmatter-conformance/) — FC001–FC005 |
-| Unicode-Tag arsenal | [`unicode-tags/`](./unicode-tags/) — PI-UNI-001..004 |
-| Supply-chain hygiene | [`supply-chain/`](./supply-chain/) — PI-PEP723-001, PI-IDFILE-001, PI-MDIMG-001 |
+| Unicode-Tag arsenal | [`unicode-tags/`](./unicode-tags/) — PI-UNI-001..005 |
+| Supply-chain hygiene | [`supply-chain/`](./supply-chain/) — PI-PEP723-001, PI-IDFILE-001, PI-MDIMG-001, PI-EXFIL-001, PI-EXFIL-002 |
+| Permissions | [`permissions/`](./permissions/) — PI-PERM-001 |
 
 ## Opt-in (12)
 
@@ -24,7 +25,7 @@ name: "Org Policy"
 scan_prompt_defense_posture: true
 ```
 
-## Anti-patterns explicitly NOT rules
+## Anti-patterns excluded by design
 
 To avoid FP flood:
 

@@ -1,6 +1,6 @@
 # Badge snippets
 
-Drop into your README to advertise Pruner verification on your skill repo.
+Drop into the README of a Pruner-scanned skill repo to advertise verification.
 
 ## Pruner Verified — release-asset SVG
 

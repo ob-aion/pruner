@@ -61,13 +61,13 @@ pruner scan examples/benign-skill --without-cisco       # zero findings
 
 ## DCO sign-off
 
-Every commit MUST include a `Signed-off-by:` trailer:
+Every commit must include a `Signed-off-by:` trailer:
 
 ```bash
 git commit -s -m "feat(rules): add PI-FOO-001 — short description"
 ```
 
-This certifies you wrote the change or have permission to contribute it under Apache-2.0. Full text: <https://developercertificate.org/>.
+The trailer certifies authorship or permission to contribute the change under Apache-2.0. Full text: <https://developercertificate.org/>.
 
 ## Conventional commits
 
@@ -81,7 +81,7 @@ Format: `type(scope): subject`. Scope is the affected module: `wrapper`, `rules`
 
 [`CHANGELOG.md`](./CHANGELOG.md) is the user-facing release log. Every PR that ships a behaviour change appends a bullet under the next version entry. Format mirrors the rest of the Coroboros family: section header `## vX.Y.Z - DD/MM/YYYY`, terse bullets describing what's in the release.
 
-Versioning is SemVer strict — git tags and GitHub release titles use the bare version (`0.1.0`, never `v0.1.0`); the CHANGELOG section header is the only place the `v` prefix appears, as a presentation convention. One PR maps to one tag and one GitHub release; release cadence and rule-pack policy live in [`GOVERNANCE.md`](./GOVERNANCE.md).
+Versioning is SemVer strict. Git tags and GitHub release titles use the bare version (`0.1.0`, never `v0.1.0`). The CHANGELOG section header is the only place the `v` prefix is used, by presentation convention. One PR maps to one tag and one GitHub release. Release cadence and rule-pack policy live in [`GOVERNANCE.md`](./GOVERNANCE.md).
 
 ## Adding a Coroboros pack rule
 
@@ -93,7 +93,7 @@ Use the `false-positive` issue template. Include:
 
 - The rule ID.
 - A minimal reproducer (the SKILL.md or script that fired).
-- Why you believe it's a false positive.
+- Why the finding is a false positive.
 - (Optional) A proposed `context_rules` refinement.
 
 ## Reporting a vulnerability

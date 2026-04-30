@@ -55,7 +55,7 @@ Exit codes:
 - `cisco-ai-skill-scanner` — pinned detection backend (subprocess-invoked).
 - Python stdlib otherwise — `re`, `unicodedata`, `subprocess`, `json`, `pathlib`, `argparse`, `dataclasses`, `typing`.
 
-The third-party `regex` module is intentionally NOT used. `unicodedata.category(c) == 'Cf'` covers the Unicode category checks; bounded `re.compile` covers the rest.
+The third-party `regex` module is intentionally absent. `unicodedata.category(c) == 'Cf'` covers the Unicode category checks; bounded `re.compile` covers the rest.
 
 ## Testing
 
@@ -75,3 +75,4 @@ pytest tests --cov=pruner_wrapper --cov-fail-under=90
 | `homoglyph-instruction` | `matchers/homoglyph_matcher.py` |
 | `frontmatter-validator` | `matchers/frontmatter_validator.py` |
 | `pep723-validator` | `matchers/pep723_validator.py` |
+| `tool-grant-validator` | `matchers/tool_grant_validator.py` |
