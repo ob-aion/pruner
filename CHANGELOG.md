@@ -1,11 +1,5 @@
 # Changelog
 
-## v0.2.2 - 30/04/2026
-
-Lifts the third remaining Scorecard finding from the 0.2.1 baseline: Signed-Releases.
-
-- **`release.yml` attaches the in-toto attestation bundles as release assets.** `actions/attest-build-provenance` and `actions/attest-sbom` already produced sigstore bundles signed against public-good Sigstore and GitHub OIDC; the bundles were stored in GitHub's attestation API and verifiable via `gh attestation verify`, but the OpenSSF Scorecard webapp inspects asset filenames for `.sig`, `.asc`, or `.intoto.jsonl` extensions and missed them — Signed-Releases scored 0/10 from 0.1.3 through 0.2.1. The new "Stage attestation bundles for release" step copies each `bundle-path` output into `./.pruner/pruner-report.intoto.jsonl` and `./.pruner/pruner-sbom.intoto.jsonl`, then attaches both alongside the existing five release assets. `gh attestation verify` continues to work unchanged — the GitHub-side attestation store is the same; the new files are local copies of the same sigstore bundles, exposed under filenames the heuristic recognises.
-
 ## v0.2.1 - 30/04/2026
 
 Post-release housekeeping. Lifts two findings on the OpenSSF Scorecard baseline.

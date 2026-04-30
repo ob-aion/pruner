@@ -66,24 +66,15 @@ jobs:
           bash scripts/publish-report.sh ./.pruner
 
       - name: Attest build provenance
-        id: attest-provenance
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32  # v4.1.0
         with:
           subject-path: ./.pruner/pruner-report.zip
 
       - name: Attest SBOM
-        id: attest-sbom
         uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e  # v4.1.0
         with:
           subject-path: ./.pruner/pruner-report.zip
           sbom-path: ./.pruner/sbom.cdx.json
-
-      - name: Stage attestation bundles for release
-        shell: bash
-        run: |
-          set -euo pipefail
-          cp "${{ steps.attest-provenance.outputs.bundle-path }}" ./.pruner/pruner-report.intoto.jsonl
-          cp "${{ steps.attest-sbom.outputs.bundle-path }}" ./.pruner/pruner-sbom.intoto.jsonl
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda  # v3.0.0
@@ -96,7 +87,5 @@ jobs:
             ./.pruner/sbom.cdx.json
             ./.pruner/report.json
             ./.pruner/coroboros.sarif
-            ./.pruner/pruner-report.intoto.jsonl
-            ./.pruner/pruner-sbom.intoto.jsonl
           draft: false
           prerelease: false
