@@ -106,15 +106,17 @@ def test_summary_helpers() -> None:
 
 
 def test_build_report_shape() -> None:
+    from pruner_wrapper import __version__
+
     report = build_report(
         findings=[_f(severity="medium")],
         allowlisted=[],
-        tools=[ToolEntry(name="pruner-wrapper", version="0.1.3", mode="policy-pack")],
+        tools=[ToolEntry(name="pruner-wrapper", version=__version__, mode="policy-pack")],
         target_repo="<test>",
         target_commit=None,
     )
     assert report["schema_version"] == "1.0.0"
-    assert report["pruner_version"] == "0.1.3"
+    assert report["pruner_version"] == __version__
     assert report["summary"]["total"] == 1
     assert report["summary"]["grade"] in {"A", "B", "C", "D", "F"}
     assert "scan_id" in report

@@ -1,6 +1,6 @@
 # Coverage matrix
 
-Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Coroboros pack adds × what nothing covers at v0.1.0. Single source of truth for "what does Pruner detect."
+Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Coroboros pack adds × what nothing covers at v0.2.0. Single source of truth for "what does Pruner detect."
 
 | Threat class (OWASP AST + LLM ref) | Cisco catches | Coroboros pack adds | Nothing covers |
 |---|---|---|---|
@@ -11,7 +11,7 @@ Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Cor
 | Variation selectors carrying payload (FE00–FE0F, E0100–E01EF) | partial | **PI-UNI-002** with cluster threshold ≥ 4 | — |
 | Bidi override / Trojan Source (CVE-2021-42574) | yes | **PI-UNI-003** as discrete signal | — |
 | Cyrillic / Greek homoglyphs in instruction tokens | yes (pass-7) | **PI-UNI-004** for `ignore`, `system`, `prompt`, `instructions`, `override`, `disregard`, `forget`, `you`, `are`, `now`, `admin`, `root` | TR39 long-tail homoglyphs not in instruction-token set |
-| Zero-width characters | yes | — | — |
+| Zero-width characters (U+200B–U+200D, U+FEFF) clustered | partial | **PI-UNI-005** with cluster threshold ≥ 3 | — |
 | ANSI escape sequences | yes | — | — |
 | Base64 / hex / rot13-encoded instructions | yes | — | — |
 | HTML-comment-hidden instructions | yes | — | — |
@@ -27,11 +27,12 @@ Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Cor
 | **PEP-723 inline-deps without `==` pin** | no (Cisco doesn't surface as discrete) | **PI-PEP723-001** | — |
 | Typosquatting on package names | yes | — | — |
 | Dependency confusion | yes | — | — |
-| `curl … \| bash`, `wget … \| sh`, `iwr … \| iex` | yes | — | — |
+| `curl … \| bash`, `wget … \| sh`, `iwr … \| iex` | yes | **PI-EXFIL-002** as discrete signal (Cato CTRL MedusaLocker pattern) | — |
 | Compiled bytecode (`.pyc`) shipped in scripts/ | yes (bytecode analyzer) | — | — |
 | Bash taint flow (source → transform → sink) | yes | — | — |
 | Office macros, polyglot files in assets/ | yes (YARA + macro pass) | — | — |
-| Network egress to webhooks / pastebins / discord | yes | — | — |
+| Network egress to webhooks / pastebins / discord / transfer.sh / ngrok | partial | **PI-EXFIL-001** as discrete signal | — |
+| `allowed-tools` declaration vs sibling-script invocations | partial (Cisco surfaces broad over-permissioning) | **PI-PERM-001** cross-file matcher (`tool-grant-validator`) flagging shell / subprocess use without declared `Bash` | — |
 | Frontmatter spec conformance (agentskills.io) | no (out of Cisco's scope) | **FC001** name kebab-case + publisher-token forbid | — |
 | Frontmatter spec conformance — description length | no | **FC002** 1–1024 chars | — |
 | Frontmatter spec conformance — top-level field whitelist | no | **FC003** custom fields under `metadata:` | — |
@@ -47,7 +48,7 @@ Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Cor
 | Transitive trust (`install all recommended_skills`) | partial | — | full transitive-trust verification (deferred to post-1.0) |
 | Eval poisoning in self-shipped test cases | yes | — | — |
 | Prompt-defense posture — defensive language presence on generalist agents | no (Cisco doesn't reverse-detect) | **PD001–PD012** (opt-in) | — |
-| MCP server CVE references (CVE-2025-53107 etc.) | partial — Snyk has the strongest coverage here | flag-only | full MCP-runtime probe (out of v0.1 scope) |
+| MCP server CVE references (CVE-2025-53107 etc.) | partial — Snyk has the strongest coverage here | flag-only | full MCP-runtime probe — out of v0.x scope; consumer-side runtime auditing of `.claude/`, MCP servers, and hooks is [`affaan-m/agentshield`](https://github.com/affaan-m/agentshield)'s territory (MIT, LLM-orchestrated three-agent pipeline) |
 | Agent-side red teaming (garak / promptfoo / PyRIT) | n/a | n/a | full live-LLM probing (deferred to post-1.0 — needs a harness) |
 | LLM-call-from-the-scanner | Cisco `--use-llm` opt-in upstream | Pruner stays deterministic at 0.1.0 | — |
 | EU AI Act regulatory signal | n/a | descriptive mapping to OWASP AST/LLM | prescriptive certification (Pruner attests; certification is out of scope) |
@@ -57,4 +58,4 @@ Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Cor
 - **"yes"** in the Cisco column means Cisco's published 13-pass analyzer covers the class; Pruner adds nothing on top.
 - **"partial"** means coverage exists but is incomplete or not surfaced as a discrete signal — Pruner's pack adds the discrete layer.
 - **"no"** means Cisco does not address it; the Coroboros pack is the only line of defense within Pruner.
-- **"Nothing covers"** is the honest negative space at v0.1.0. Each gap is either a deferred-by-decision item (post-1.0 scope) or fundamentally beyond static analysis (semantic latent activation).
+- **"Nothing covers"** is the negative space at v0.2.0. Each gap is either a deferred-by-decision item (post-1.0 scope) or fundamentally beyond static analysis (semantic latent activation).

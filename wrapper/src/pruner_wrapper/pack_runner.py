@@ -21,6 +21,24 @@ from pruner_wrapper.types import (
 
 DEFAULT_PACK_DIR = Path("rules")
 
+_SCAN_CONTEXT: dict[str, Any] = {}
+
+
+def get_scan_context() -> dict[str, Any]:
+    """Return a snapshot of the current scan context (set by `scan_tree`).
+
+    Cross-file matchers (e.g., `tool-grant-validator`) consult this to
+    reach the scan-tree root. Returns an empty dict when called outside
+    a `scan_tree` invocation.
+    """
+
+    return dict(_SCAN_CONTEXT)
+
+
+def _set_scan_context(**kwargs: Any) -> None:
+    _SCAN_CONTEXT.clear()
+    _SCAN_CONTEXT.update(kwargs)
+
 
 def load_rule(path: Path) -> Rule:
     """Load a single YAML rule file."""
@@ -141,21 +159,25 @@ def scan_tree(
     findings: list[Finding] = []
     file_cache: dict[Path, str] = {}
 
-    for rule in active_rules:
-        scope_patterns: list[str] = list(rule.scope.get("file_patterns") or [])
-        if not scope_patterns:
-            continue
-        for absolute in _iter_files(root):
-            relative = absolute.relative_to(root).as_posix()
-            if not file_matches_scope(relative, scope_patterns):
+    _set_scan_context(tree_root=root)
+    try:
+        for rule in active_rules:
+            scope_patterns: list[str] = list(rule.scope.get("file_patterns") or [])
+            if not scope_patterns:
                 continue
-            try:
-                text = file_cache.setdefault(absolute, absolute.read_text(encoding="utf-8"))
-            except (OSError, UnicodeDecodeError):
-                continue
-            for raw_finding in dispatch(rule, relative, text):
-                tagged = _attach_source_confidence(raw_finding, rule)
-                findings.append(tagged)
+            for absolute in _iter_files(root):
+                relative = absolute.relative_to(root).as_posix()
+                if not file_matches_scope(relative, scope_patterns):
+                    continue
+                try:
+                    text = file_cache.setdefault(absolute, absolute.read_text(encoding="utf-8"))
+                except (OSError, UnicodeDecodeError):
+                    continue
+                for raw_finding in dispatch(rule, relative, text):
+                    tagged = _attach_source_confidence(raw_finding, rule)
+                    findings.append(tagged)
+    finally:
+        _set_scan_context()
     return findings
 
 
@@ -205,6 +227,7 @@ __all__ = [
     "Category",
     "file_matches_scope",
     "filter_by_threshold",
+    "get_scan_context",
     "load_pack",
     "load_rule",
     "scan_rule_against_text",

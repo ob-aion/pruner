@@ -1,0 +1,56 @@
+id: PI-UNI-005
+slug: zero-width-characters
+title: "Clustered zero-width characters (U+200B-U+200D, U+FEFF)"
+severity: high
+category: prompt-injection
+owasp_ref: LLM01
+owasp_ast: AST01
+mitre_atlas:
+  - AML.T0051.000
+nist_ai_rmf:
+  - MS-2.6
+taxonomy_3d:
+  delivery: in-source
+  modality: text
+  propagation: container-bound
+pattern:
+  type: codepoint-range
+  ranges:
+    - ["200B", "200D"]
+    - ["FEFF", "FEFF"]
+  threshold: 3
+rationale: |
+  Zero-width space (U+200B), zero-width non-joiner (U+200C), zero-width
+  joiner (U+200D), and the byte-order mark (U+FEFF) are invisible in most
+  renderers and survive copy-paste. arXiv:2603.00164 documented zero-width
+  binary-encoded payloads as the secondary smuggling channel after Tag
+  blocks (PI-UNI-001). A cluster of three or more on instruction-bearing
+  text is payload-smuggling; legitimate uses (RTL/LTR shaping, ZWJ for
+  emoji sequences) are below the threshold.
+references:
+  - https://arxiv.org/abs/2603.00164
+  - https://embracethered.com/blog/posts/2024/hiding-and-finding-text-with-unicode-tags/
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive:
+    - "Hello​​​ world"
+  negative:
+    - "Plain ASCII content."
+    - "Family‍ emoji sequence"
+scope:
+  file_patterns:
+    - "**/*.md"
+    - "**/SKILL.md"
+    - "skills/**/scripts/*"
+    - "skills/**/scripts/**"
+  ignore_in_fenced_blocks: false
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "**/__snapshots__/**"
+weight_override: 1.00
+fix:
+  auto: false
+  description: "Strip clustered zero-width characters from the file."
+status: stable
+since: "0.2.0"

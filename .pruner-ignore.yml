@@ -42,3 +42,19 @@ ignores:
   - rule: FC005
     path: examples/vulnerable-skill/SKILL.md
     justification: "Intentional vulnerable-skill fixture — non-SPDX license demonstrates FC005."
+
+  - rule: PI-UNI-005
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — clustered zero-width chars demonstrate PI-UNI-005."
+
+  - rule: PI-EXFIL-001
+    path: examples/vulnerable-skill/scripts/install.sh
+    justification: "Intentional vulnerable-skill fixture — Discord webhook URL demonstrates PI-EXFIL-001."
+
+  - rule: PI-EXFIL-002
+    path: examples/vulnerable-skill/scripts/install.sh
+    justification: "Intentional vulnerable-skill fixture — curl-pipe-bash demonstrates PI-EXFIL-002."
+
+  - rule: PI-PERM-001
+    path: examples/vulnerable-skill/SKILL.md
+    justification: "Intentional vulnerable-skill fixture — allowed-tools mismatch with sibling scripts demonstrates PI-PERM-001."

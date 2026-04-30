@@ -8,6 +8,9 @@ __pycache__/
 build/
 dist/
 .tox/
+
+# setuptools-scm generated version file
+wrapper/src/pruner_wrapper/_version.py
 .coverage
 .coverage.*
 htmlcov/
@@ -17,6 +20,7 @@ htmlcov/
 
 # Virtualenvs
 .venv/
+.venv-*/
 venv/
 env/
 ENV/

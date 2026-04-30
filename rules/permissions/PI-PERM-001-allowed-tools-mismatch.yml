@@ -1,0 +1,45 @@
+id: PI-PERM-001
+slug: allowed-tools-mismatch
+title: "Skill scripts invoke shell or subprocess but `allowed-tools` omits Bash"
+severity: high
+category: permissions
+owasp_ref: LLM08
+owasp_ast: AST02
+mitre_atlas:
+  - AML.T0010.001
+nist_ai_rmf:
+  - GV-1.5
+taxonomy_3d:
+  delivery: in-source
+  modality: code
+  propagation: container-bound
+pattern:
+  type: tool-grant-validator
+rationale: |
+  A skill declares its tool surface in frontmatter (`allowed-tools: Read`,
+  `allowed-tools: Bash(git:*)`, etc.). When `scripts/*.py` imports
+  `subprocess` or `pty`, or `scripts/*.sh` contains executable lines, but
+  the declaration omits `Bash` (or a wildcard equivalent), the runtime
+  intent diverges from the declared posture — the canonical
+  "code-formatter that reads ~/.ssh" pattern from OWASP AST02. The
+  declaration is the contract the agent runtime enforces; scripts that
+  exceed it are either misdeclared or malicious.
+references:
+  - https://owasp.org/www-project-agentic-skills-top-10/
+fixtures:
+  positive: "(skill folder with scripts/install.sh and allowed-tools: Read)"
+  negative: "(skill folder with scripts/install.sh and allowed-tools: Read,Bash)"
+scope:
+  file_patterns:
+    - "**/SKILL.md"
+    - "skills/**/SKILL.md"
+context_rules:
+  skip_if_path_matches:
+    - "wrapper/tests/**"
+    - "wrapper/src/**"
+    - "**/__snapshots__/**"
+fix:
+  auto: false
+  description: "Either add `Bash` (or a narrowed `Bash(...)` grant) to `allowed-tools`, or remove the script invocations from the skill."
+status: experimental
+since: "0.2.0"

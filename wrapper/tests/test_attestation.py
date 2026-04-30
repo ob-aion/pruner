@@ -6,8 +6,8 @@ from pruner_wrapper.attestation import attestation_block
 
 
 def test_block_with_tag() -> None:
-    block = attestation_block(repo="ob-aion/pruner", tag="0.1.3")
-    assert block["sbom_url"].endswith("/releases/download/0.1.3/sbom.cdx.json")
+    block = attestation_block(repo="ob-aion/pruner", tag="0.2.0")
+    assert block["sbom_url"].endswith("/releases/download/0.2.0/sbom.cdx.json")
     assert block["verification_command"].startswith("gh attestation verify")
     assert "--owner ob-aion" in block["verification_command"]
 
