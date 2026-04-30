@@ -40,7 +40,7 @@
 9. `emit-badge` — render `badge.svg` from grade + Coroboros design tokens.
 10. `upload-sarif` + `gate` — push aggregated SARIF to GitHub Code Scanning; exit 0/1/2/3 per `fail-on`.
 
-The composite is the **primary surface**. The reusable workflow at `.github/workflows/scan.yml` is a one-line consumer convenience that wraps the composite plus the attestation steps. (`reusable-full-scan.yml` is kept as a deprecated alias for one minor cycle and removed in 0.3.0.)
+The composite is the **primary surface**. The reusable workflow at `.github/workflows/scan.yml` is a one-line consumer convenience that wraps the composite plus the attestation steps.
 
 ## Wrapper package structure
 

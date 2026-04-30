@@ -22,7 +22,7 @@ Full diagram: [`docs/architecture.md`](./docs/architecture.md). Why Cisco: [`doc
 - `templates/` — consumer-facing scaffolds.
 - `examples/` — `vulnerable-skill/` + `benign-skill/` fixtures with `EXPECTATIONS.md`.
 - `docs/` — threat model, coverage matrix, FP audit, writing-rules, verify-a-report, consumer-integration.
-- `.github/workflows/` — `self-scan`, `release`, `scorecard`, `cisco-upstream-check`, `scan` (canonical reusable workflow), `reusable-full-scan` (deprecated alias, removed in 0.3.0).
+- `.github/workflows/` — `self-scan`, `release`, `scorecard`, `cisco-upstream-check`, `scan` (consumer-facing reusable workflow).
 
 ## Non-negotiables
 
