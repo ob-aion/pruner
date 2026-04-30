@@ -43,7 +43,7 @@ Output is deterministic at v0.1 — no LLM keys required.
 - **Office macros, polyglot files, encrypted ZIPs** in `assets/` — Cisco covers via YARA; Pruner does not duplicate.
 - **Taint / dataflow analysis** — delegated to Cisco's pipeline-analyser.
 - **MCP server runtime behaviour** — `snyk/agent-scan` (CLI, requires `SNYK_TOKEN`) and AgentShield (LLM-orchestrated). Pruner does not run agent-side probes.
-- **Live agent red-teaming** — out of v0.x scope. Tools that probe a runnable agent: NVIDIA garak, promptfoo, Microsoft PyRIT. Phase-4 reconsideration documented in `brain/research/pruner/NEXT.md` (private roadmap).
+- **Live agent red-teaming** — out of v0.x scope. Tools that probe a runnable agent: NVIDIA garak, promptfoo, Microsoft PyRIT. Phase-4 reconsideration is tracked internally.
 - **Image / PDF OCR injection** — Cisco scans some; full multimodal is out of v0.x scope.
 
 Per-rule × per-tool coverage matrix: [`docs/coverage-matrix.md`](./coverage-matrix.md).

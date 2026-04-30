@@ -6,7 +6,7 @@ The detection backend is `cisco-ai-defense/skill-scanner`. This document records
 
 Pruner's value is the **trust artefact** — a portable signed attestation chain that travels with the skill release and verifies independently. Detection is a commodity: building a fresh 13-pass static analyzer would be a year of work and would launch with no ecosystem trust.
 
-Pruner does **no independent code SAST**. Skills routinely ship shell scripts, Python helpers, and JS / TS hooks — all of that is analysed by Cisco's subprocess (Python AST, JS / TS, bash pipeline-analyser with taint flow, bytecode disassembly, Office macros, PDF structural analysis). Pruner does not re-implement bandit, ruff, semgrep, or shellcheck. The Coroboros pack adds **only** what Cisco does not surface as discrete signals — codepoint scans, frontmatter validators, PEP-723 metadata checks, identity-file path matching, webhook / pastebin signature regexes, the cross-file allowed-tools mismatch.
+Pruner does **no independent code SAST**. Skill repositories ship code under `scripts/` — shell, Python, JS, TS — and all of it is analysed by Cisco's subprocess (Python AST, JS / TS, bash pipeline-analyser with taint flow, bytecode disassembly, Office macros, PDF structural). Pruner does not re-implement bandit, ruff, semgrep, or shellcheck. The Coroboros pack adds **only** what Cisco does not surface as discrete signals — codepoint scans, frontmatter validators, PEP-723 metadata checks, identity-file path matching, webhook / pastebin signature regexes, the cross-file allowed-tools mismatch.
 
 `cisco-ai-defense/skill-scanner` is the right backend at v0.1 because:
 

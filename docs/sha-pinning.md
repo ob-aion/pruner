@@ -5,9 +5,9 @@ Every third-party `uses:` line in this repo is SHA-pinned with a `# vX.Y.Z` comm
 1. **A commit object.** What you want.
 2. **An annotated-tag object.** What you do not want.
 
-Both are valid SHAs and both `git checkout` cleanly. GitHub Actions accepts either at runtime — the workflow runs. The OpenSSF Scorecard webapp does not: when it uploads results it checks that the pinned SHA resolves to a real commit in the upstream repository, and rejects tag-object SHAs with a 400 / `imposter commit` error. Result: the SARIF still lands in Code Scanning but the published score on `securityscorecards.dev` never updates.
+Both are valid SHAs and both `git checkout` cleanly. GitHub Actions accepts either at runtime — the workflow runs. The OpenSSF Scorecard webapp does not. When it uploads results, it checks the pinned SHA resolves to a real commit in the upstream repository. Tag-object SHAs are rejected with a 400 / `imposter commit` error. The SARIF still lands in Code Scanning but the published score on `securityscorecards.dev` never updates.
 
-This is how `0.1.0` through `0.1.3` shipped with `ossf/scorecard-action@99c09fe975337306107572b4fdf4db224cf8e2f2` and `github/codeql-action/upload-sarif@865f5f5c36632f18690a3d569fa0a764f2da0c3e` — both were tag objects, not commits. `0.2.0` corrected both.
+This is how `0.1.0` through `0.1.3` shipped with `ossf/scorecard-action@99c09fe975337306107572b4fdf4db224cf8e2f2` and `github/codeql-action/upload-sarif@865f5f5c36632f18690a3d569fa0a764f2da0c3e` — both pinned to tag objects rather than commits. `0.2.0` corrected both.
 
 ## Resolve a tag to its commit
 

@@ -58,4 +58,4 @@ Honest three-column table: what `cisco-ai-skill-scanner` catches × what the Cor
 - **"yes"** in the Cisco column means Cisco's published 13-pass analyzer covers the class; Pruner adds nothing on top.
 - **"partial"** means coverage exists but is incomplete or not surfaced as a discrete signal — Pruner's pack adds the discrete layer.
 - **"no"** means Cisco does not address it; the Coroboros pack is the only line of defense within Pruner.
-- **"Nothing covers"** is the honest negative space at v0.1.0. Each gap is either a deferred-by-decision item (post-1.0 scope) or fundamentally beyond static analysis (semantic latent activation).
+- **"Nothing covers"** is the negative space at v0.2.0. Each gap is either a deferred-by-decision item (post-1.0 scope) or fundamentally beyond static analysis (semantic latent activation).

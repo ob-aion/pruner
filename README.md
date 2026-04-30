@@ -35,19 +35,19 @@ Coroboros's attestation chain for agent skill repositories.
 
 ## Why now
 
-The agent-skills ecosystem moved from launch (October 2025) to "registry already poisoned at scale" in roughly four months. Snyk's ToxicSkills audit (February 2026) found 36.82 % of 3,984 scanned skills carrying security flaws and 13.4 % critical issues. The ClawHavoc campaign (Antiy CERT, Koi Security, January–February 2026) placed 1,184 malicious skills across the ecosystem with single-IP C2. Cato CTRL weaponised Anthropic's official `slack-gif-creator` skill (December 2025) — minor edits triggered a remote-fetch-and-execute that delivered MedusaLocker, under a single user-consent trust model.
+The agent-skills ecosystem moved from launch (October 2025) to "registry already poisoned at scale" in four months. Snyk's ToxicSkills audit (February 2026) found 36.82 % of 3,984 scanned skills carrying security flaws and 13.4 % critical issues. The ClawHavoc campaign (Antiy CERT, Koi Security, January–February 2026) placed 1,184 malicious skills across the ecosystem with single-IP C2. Cato CTRL weaponised Anthropic's official `slack-gif-creator` skill in December 2025. Minor edits triggered a remote-fetch-and-execute that delivered MedusaLocker — under a single user-consent trust model.
 
-Vendor responsibility lands on the user. Anthropic states explicitly: *"It is the user's responsibility to only use and execute trusted Skills."* Skills.sh runs a server-side audit at install through the CLI; a direct `git clone` bypasses it entirely, and once a skill is installed, drift is not re-scanned. The trust signal needs to live where the audit happens — at source, before publication.
+Vendor responsibility lands on the user. Anthropic states explicitly: *"It is the user's responsibility to only use and execute trusted Skills."* Skills.sh runs a server-side audit at install through the CLI. A direct `git clone` bypasses it entirely. Once a skill is installed, drift is not re-scanned. The trust signal needs to live where the audit happens — at source, before publication.
 
 ## What Pruner is
 
-A composite GitHub Action that runs at the publisher's CI before a skill release ships. It produces a single trust artefact — `report-v1.json` plus a CycloneDX SBOM and SLSA build provenance, signed with public-good [Sigstore](https://www.sigstore.dev/) and GitHub OIDC — attached to every release tag. Consumers verify with `gh attestation verify`; no Coroboros service sits in the trust path.
+A composite GitHub Action that runs at the publisher's CI before a skill release ships. It produces a single trust artefact: `report-v1.json` plus a CycloneDX SBOM and SLSA build provenance. The bundle is signed with public-good [Sigstore](https://www.sigstore.dev/) and GitHub OIDC, and attached to every release tag. Consumers verify with `gh attestation verify`; no Coroboros service sits in the trust path.
 
-Output is deterministic at v0.1. No LLM keys required. No telemetry.
+Output is deterministic at v0.1. No LLM keys, no telemetry.
 
 ## Why a wrapper, not another scanner
 
-[`cisco-ai-defense/skill-scanner`](https://github.com/cisco-ai-defense/skill-scanner) is excellent OSS. Apache-2.0, fully local, thirteen-pass static analyser plus bytecode, behavioural dataflow, meta-analyser, and an optional LLM-as-judge. Rebuilding it would burn months for a strictly worse outcome. Pruner pins it as the detection backend and adds the four things it does not surface as discrete signals:
+[`cisco-ai-defense/skill-scanner`](https://github.com/cisco-ai-defense/skill-scanner) is the OSS reference engine for skill scanning — Apache-2.0, fully local, thirteen-pass static analyser plus bytecode, behavioural dataflow, meta-analyser, optional LLM-as-judge. Rebuilding it costs a year and yields a worse outcome. Pruner pins it as the detection backend and adds the four things it does not surface as discrete signals:
 
 - **agentskills.io frontmatter conformance** (`FC001`–`FC005`) — kebab-case names, description length, custom-fields-under-metadata, the Coroboros house rule against `metadata.version` (skill versioning is repo-tag-driven), and SPDX licence validation.
 - **Identity-file write protection** (`PI-IDFILE-001`) — scripts that write to `AGENTS.md`, `MEMORY.md`, `SOUL.md`, `~/.bashrc`, `.cursorrules`, `.claude/settings.json`, `CLAUDE.md`. The ClawHavoc session-persistent backdoor pattern.
@@ -58,7 +58,7 @@ The novel contribution is the trust artefact, not the scanner. The scanner is in
 
 ## Code inside skills
 
-Skills routinely ship code: shell scripts, Python helpers, JS / TS hooks. Static analysis of that code is delegated entirely to Cisco's subprocess — Python AST, JS / TS, bash pipeline-analyser with taint flow, bytecode disassembly, Office macros, PDF structural analysis. Pruner does not re-implement bandit, ruff, semgrep, or shellcheck.
+Skill repositories ship code under `scripts/` — shell, Python, JS, TS. Static analysis of all of it is delegated to Cisco's subprocess: Python AST, JS / TS, bash pipeline-analyser with taint flow, bytecode disassembly, Office macros, PDF structural. Pruner does not re-implement bandit, ruff, semgrep, or shellcheck.
 
 The Coroboros pack adds patterns Cisco does not surface as discrete rules: codepoint scans, frontmatter validators, PEP-723 metadata checks, identity-file path matching, webhook / pastebin / tunnel signature regexes, remote-fetch-and-execute patterns, and the cross-file allowed-tools-vs-scripts mismatch. The split is deliberate — Cisco's engine is the SAST surface, the Coroboros pack is the skill-specific posture surface.
 
@@ -99,7 +99,7 @@ Templates for minimal and full integrations live in [`templates/`](./templates/)
 
 ## Compared to
 
-Each tool answers a different question; the comparison is honest, not competitive.
+Each tool answers a different question.
 
 | Tool | Form | Where it runs | License | Network |
 | --- | --- | --- | --- | --- |
@@ -113,7 +113,7 @@ Pruner answers *"is this skill safe to ship?"* — and produces a portable, sign
 
 ## Reports and verification
 
-Every release attaches `pruner-report.zip` to its GitHub release page, containing `report-v1.json`, the aggregated SARIF, the CycloneDX SBOM, the OpenSSF Scorecard JSON, the in-toto attestations, and the badge SVG. Verification:
+Every release attaches `pruner-report.zip` to its GitHub release page. Inside: `report-v1.json`, aggregated SARIF, CycloneDX SBOM, OpenSSF Scorecard JSON, in-toto attestations, badge SVG. Verification:
 
 ```bash
 gh release download <tag> --repo <owner>/<repo> --pattern 'pruner-report.zip'
@@ -124,7 +124,7 @@ Walkthrough: [`docs/verify-a-report.md`](./docs/verify-a-report.md). Schemas at 
 
 ## Coverage
 
-Honest matrix of what Cisco catches × what the Coroboros pack adds × what nothing covers: [`docs/coverage-matrix.md`](./docs/coverage-matrix.md). FP-audit on three public skill repos (`anthropics/skills`, `vercel-labs/agent-skills`, `coroboros/agent-skills`): [`docs/fp-audit.md`](./docs/fp-audit.md). Threat model and disclosure: [`docs/threat-model.md`](./docs/threat-model.md).
+Coverage matrix — what Cisco catches × what the Coroboros pack adds × what nothing covers: [`docs/coverage-matrix.md`](./docs/coverage-matrix.md). FP-audit on `anthropics/skills`, `vercel-labs/agent-skills`, and `coroboros/agent-skills`: [`docs/fp-audit.md`](./docs/fp-audit.md). Threat model and disclosure: [`docs/threat-model.md`](./docs/threat-model.md).
 
 ## Snyk second opinion
 
@@ -132,9 +132,9 @@ Optional. Set `with-snyk: true` and provide `SNYK_TOKEN`; Snyk findings land in 
 
 ## Vision
 
-The trust artefact is the deliverable. The scanner is replaceable. The intent for 1.0 is to submit `report-v1` and the attestation bundle shape to the [OpenSSF Working Group on Supply-Chain Integrity](https://openssf.org/community/supply-chain-integrity/) as a candidate spec contribution, and to register Pruner in the Sigstore landscape.
+The trust artefact is the deliverable. The scanner is replaceable. At 1.0: submit `report-v1` and the attestation bundle shape as a candidate spec contribution to the [OpenSSF Working Group on Supply-Chain Integrity](https://openssf.org/community/supply-chain-integrity/). Register Pruner in the Sigstore landscape alongside.
 
-The bet is structural: a portable, signed, regulator-friendly trust artefact at the publisher boundary closes the gap that runtime guards and install-time audits structurally cannot — direct repo clones, drift between install and use, and registry bypass.
+A signed trust artefact at the publisher boundary closes two gaps that runtime guards and install-time audits cannot reach: direct git-clone of a skill repository bypasses any registry-side audit, and once a skill is installed, post-publish drift is never re-scanned.
 
 ## Governance
 
