@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.1 - 30/04/2026
+
+Post-release housekeeping. Lifts two findings on the OpenSSF Scorecard baseline.
+
+- **Dropped `pip install --quiet --upgrade pip`** from `scripts/setup-cisco.sh`. `actions/setup-python` already provides a recent pip; the explicit upgrade was a redundant `pipCommand` finding for Scorecard's Pinned-Dependencies check.
+- **Added a `SCORECARD_TOKEN` fallback** to `.github/workflows/scorecard.yml`: `repo_token: ${{ secrets.SCORECARD_TOKEN || secrets.GITHUB_TOKEN }}`. The default `GITHUB_TOKEN` cannot read classic branch-protection rules, which scored Branch-Protection at `-1` (inconclusive). Wiring an optional fine-grained PAT (with `Administration: read` scope on the repo, stored as the `SCORECARD_TOKEN` secret) lifts the check to a real score; in the secret's absence the workflow falls back to `GITHUB_TOKEN` and behaves as before.
+
 ## v0.2.0 - 30/04/2026
 
 Pack expansion, attestation guard rails, scan workflow rename.
