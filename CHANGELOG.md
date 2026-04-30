@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.0 - 30/04/2026
+
+Hardening release. Action SHA pins corrected, pin-verifier added.
+
+- **Pinned `ossf/scorecard-action` to commit SHA `4eaacf0543bb3f2c246792bd56e8cdeffafb205a`** (was `99c09fe975337306107572b4fdf4db224cf8e2f2`, the annotated-tag-object SHA). The OpenSSF Scorecard webapp validates that pinned SHAs resolve to real commits and rejects tag objects with a 400 / `imposter commit` error — `0.1.x` was uploading SARIF to Code Scanning correctly but failing the score-publish step.
+- **Pinned `github/codeql-action/upload-sarif` to commit SHA `ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a`** (was `865f5f5c36632f18690a3d569fa0a764f2da0c3e`, also a tag-object SHA). Same root cause; affects `scorecard.yml` and `action.yml`.
+- **Added `scripts/verify-action-pins.sh`** — pre-flight script that walks every `.github/workflows/*.yml` and `action.yml`, resolves each pinned action SHA against the upstream repository's `commits` API, and fails non-zero on tag-object SHAs. Wired into `release.yml` so a bad pin halts the release before the tag is cut.
+- **Documented the tag-object-vs-commit gotcha** in `docs/sha-pinning.md` for future contributors.
+
 ## v0.1.3 - 29/04/2026
 
 Patch release fixing the gate-step exit-code interpretation in the composite action and finishing the OpenSSF Scorecard permission-tightening pass.
