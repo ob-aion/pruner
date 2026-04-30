@@ -15,6 +15,15 @@ Pack expansion, attestation guard rails, scan workflow rename.
 - **Added matcher type `tool-grant-validator`** (`schema/rule-v1.json` enum + `wrapper/src/pruner_wrapper/matchers/tool_grant_validator.py`). Cross-file matchers receive the scan-tree root via the new `pack_runner.get_scan_context()` helper.
 - **Extended `examples/vulnerable-skill`** with tripwires for the four new rules and updated `EXPECTATIONS.md` cross-walk. `.pruner-ignore.yml` adds matching allowlist entries with explicit justifications.
 - **Schema enrichment** (`schema/rule-v1.json`): three optional taxonomy fields — `mitre_atlas` (array of `AML.T####(.###)?` technique IDs), `nist_ai_rmf` (array of `GV/MP/MS/MG-N(.M)*` subcategory references), `taxonomy_3d` (Maloyan/Namiot SoK 3-D — `delivery` × `modality` × `propagation` enums). Backwards-compatible — unknown keys were already tolerated; existing rules backfill incrementally in 0.2.x. New 0.2.0 rules (PI-UNI-005, PI-EXFIL-001/002, PI-PERM-001) ship populated.
+- **Renamed reusable workflow `reusable-full-scan.yml` → `scan.yml`.** Matches the `pruner scan` CLI verb and the production-grade conventions used by Cisco's `scan-skills.yml` and Snyk's `agent-scan`. The old filename remains in-tree as a deprecation alias that delegates to `scan.yml` via `secrets: inherit`; removed in 0.3.0. Templates and `docs/consumer-integration.md` reference the new filename. Migration is one-line: `uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.0`.
+
+### Breaking changes
+
+- The reusable workflow file is now `scan.yml`. The 0.1.x entry-point `reusable-full-scan.yml` keeps working through the 0.2.x line as a thin alias and is removed in 0.3.0.
+
+### Upgrade notes
+
+- 0.1.x consumers: change `uses: ob-aion/pruner/.github/workflows/reusable-full-scan.yml@0.1.x` to `uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.0`. No input changes.
 
 ## v0.1.3 - 29/04/2026
 
