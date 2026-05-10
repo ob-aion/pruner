@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for considering a contribution. Pruner is small, opinionated, and maintained by a tiny team — the bar for merging is high, but the rules are explicit.
+Thanks for considering a contribution. Pruner is small and solo-maintained. The bar for merging is high; the rules are explicit.
 
 ## Quick path
 
