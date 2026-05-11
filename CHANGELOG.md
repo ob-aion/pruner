@@ -1,10 +1,18 @@
 # Changelog
 
+## v0.2.6 - 11/05/2026
+
+Cisco engine bump — first since 0.1.0. Replaces Dependabot PR #10 with the full `wrapper/CISCO_PIN.md` bump procedure (FP-audit corpus run, doc updates, dual-version parity check).
+
+- **`cisco-ai-skill-scanner` pinned to `2.0.11` (was `2.0.9`).** The bump folds in `2.0.10`'s rule-pack expansion from 34 to 314 signatures (~10×, restructured by category) and `2.0.11`'s internal release-pipeline fix. Touched: `wrapper/pyproject.toml`, `wrapper/src/pruner_wrapper/cisco_runner.py` (`PINNED_VERSION`), `scripts/setup-cisco.sh` (default), `wrapper/CISCO_PIN.md` (version, release date, main-HEAD SHA `ff708ea00fd401640112c138711c5c36ff4992a0`, license re-verified at `2026-05-11`), `wrapper/README.md`, and five wrapper test fixtures. `2.0.10`'s opt-in surface (OpenAI-compatible LLM endpoints, LiteLLM Gemini fallback, `--render-markdown` CLI flag) does not affect Pruner — the wrapper stays deterministic at v0.x and never invokes the LLM-as-judge path.
+- **`docs/fp-audit.md` 0.2.6 audit section.** Full reproduction against the canonical corpus (`coroboros/agent-skills`, `anthropics/skills`, `vercel-labs/agent-skills`) in both `--without-cisco` (Coroboros pack baseline) and dual-version `--with-cisco` parity check. Result: **zero net Cisco detection drift** on either corpus (22 findings on coroboros, 20 on vercel-labs, identical rule-id distribution between Cisco 2.0.9 and 2.0.11). The 280 newly added Cisco signatures do not fire on well-formed skills — likely target patterns not present in the dogfood targets. Coroboros pack delta vs 0.1.0: +1 FC003 (corpus added one new skill matching the existing non-canonical-frontmatter pattern) and +1 PI-PERM-001 (rule added in 0.2.0, true positive on `coroboros/agent-skills/skills/design-system/SKILL.md`). Three 0.1.0 tracking notes still apply unchanged.
+- **License-drift guard re-validated.** `cisco-ai-skill-scanner` 2.0.11 ships Apache-2.0 LICENSE intact at `<venv>/lib/python*/site-packages/cisco_ai_skill_scanner-2.0.11.dist-info/licenses/LICENSE`. `scripts/setup-cisco.sh` greps the Apache marker and halts the composite action with the lore-tagged drift message on any future regression.
+
 ## v0.2.5 - 11/05/2026
 
 CI dependency bump prompted by the Node.js 20 deprecation warning surfaced on every release run since 0.2.3.
 
-- **`github/codeql-action/upload-sarif` bumped from `3.35.2` to `4.35.3`.** Affects `.github/workflows/scorecard.yml` and `action.yml`. The v4 line runs on Node.js 24 (v3 is Node.js 20, slated for forced migration on 2026-06-02 and removal on 2026-09-16) and adds OIDC support for Cloudsmith / GCP private registries plus several bundle and bug fixes. No behaviour change for our SARIF-upload-only use case. New SHA pin `e46ed2cbd01164d986452f91f178727624ae40d7` confirmed as a real commit (not a tag object) by `scripts/verify-action-pins.sh`. Replaces Dependabot PR #11 — Dependabot left the `# v3` annotation on the SHA-bumped line; the proper `# v4.35.3` annotation matches the specificity of the rest of the repo's pin comments.
+- **`github/codeql-action/upload-sarif` bumped from `3.35.2` to `4.35.3`.** Affects `.github/workflows/scorecard.yml` and `action.yml`. The v4 line runs on Node.js 24 (v3 is Node.js 20, slated for forced migration on 2026-06-02 and removal on 2026-09-16) and adds OIDC support for Cloudsmith / GCP private registries plus several bundle and bug fixes. No behaviour change for the SARIF-upload-only use case. New SHA pin `e46ed2cbd01164d986452f91f178727624ae40d7` confirmed as a real commit (not a tag object) by `scripts/verify-action-pins.sh`. Replaces Dependabot PR #11 — Dependabot left the `# v3` annotation on the SHA-bumped line; the proper `# v4.35.3` annotation matches the specificity of the rest of the repo's pin comments.
 
 ## v0.2.4 - 11/05/2026
 

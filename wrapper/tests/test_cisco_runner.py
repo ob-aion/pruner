@@ -10,7 +10,7 @@ from pruner_wrapper.cisco_runner import (
 
 
 def test_pinned_version_constant() -> None:
-    assert PINNED_VERSION == "2.0.9"
+    assert PINNED_VERSION == "2.0.11"
 
 
 def test_binary_name_is_skill_scanner() -> None:

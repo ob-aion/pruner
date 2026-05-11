@@ -85,7 +85,7 @@ def test_compose_with_invalid_input(tmp_path: Path) -> None:
 
 def test_engine_sha_from_tools_helper() -> None:
     short = cli._engine_sha_from_tools(
-        [{"name": "cisco-ai-skill-scanner", "version": "2.0.9", "sha": "abcdef0123"}]
+        [{"name": "cisco-ai-skill-scanner", "version": "2.0.11", "sha": "abcdef0123"}]
     )
     assert short == "abcdef01"
 

@@ -7,12 +7,12 @@ Pruner pins the detection backend to a specific `cisco-ai-skill-scanner` release
 | Field | Value |
 |---|---|
 | Package | `cisco-ai-skill-scanner` |
-| Version | `2.0.9` |
-| Release date | `2026-04-10` |
-| Upstream main HEAD at pin time | `f2858cf3bc1be94e9a51ce0bca9c8d87c64364d7` (`2026-04-22`) |
-| License | Apache-2.0 (verified at install via `scripts/setup-cisco.sh`) |
+| Version | `2.0.11` |
+| Release date | `2026-04-30` |
+| Upstream main HEAD at pin time | `ff708ea00fd401640112c138711c5c36ff4992a0` (`2026-04-30`) |
+| License | Apache-2.0 (verified at install via `scripts/setup-cisco.sh`; re-verified 2026-05-11) |
 | Upstream | <https://github.com/cisco-ai-defense/skill-scanner> |
-| PyPI | <https://pypi.org/project/cisco-ai-skill-scanner/2.0.9/> |
+| PyPI | <https://pypi.org/project/cisco-ai-skill-scanner/2.0.11/> |
 | CLI binaries | `skill-scanner`, `skill-scanner-api`, `skill-scanner-pre-commit` |
 
 ## License-drift verification
@@ -59,14 +59,22 @@ Failure opens an issue tagged `upstream-drift`. Triage SLA: 7 days.
 
 ## Why this version
 
-`2.0.9` ships:
+`2.0.11` ships everything `2.0.9` shipped, plus:
+
+- **Rule pack expansion 34 → 314** (2.0.10). Restructured by category. The wrapper layer is unaffected because every Cisco rule round-trips as a SARIF result the wrapper composes into `report-v1.json` without per-rule handling.
+- **OpenAI-compatible LLM endpoints** and **LiteLLM Gemini fallback** (2.0.10). Both opt-in; Pruner stays deterministic at v0.x and never invokes them.
+- **`--render-markdown` override** (2.0.10). Cosmetic CLI flag; Pruner consumes SARIF.
+- **Dependency hygiene** (2.0.10): relaxed abstract pins, tightened lockfile, added CI gates. Reduces downstream pip-resolution noise.
+- **Release pipeline fix** (2.0.11): assets uploaded before publish (internal Cisco fix; no consumer impact).
+
+Carried forward from `2.0.9`:
 
 - Multi-engine static analyzer (13 passes) with documented meta-analyzer FP reduction.
 - Bytecode analyzer for `.pyc` shipped in `scripts/`.
-- LLM-as-judge as opt-in (Pruner stays deterministic at v0.1).
+- LLM-as-judge as opt-in (Pruner stays deterministic at v0.x).
 - YARA + homoglyph + Office macros + PDF passes.
 - SARIF output that composes with Pruner's `report-v1.json` schema.
-- Apache-2.0 LICENSE present and valid (verified `2026-04-29`).
+- Apache-2.0 LICENSE present and valid (re-verified `2026-05-11`).
 - No `CRITICAL` open CVE on NVD against the engine at pin time.
 
 ## Swap path (license change / archival)

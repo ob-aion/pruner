@@ -86,7 +86,7 @@ def test_allowlist_entry_to_dict() -> None:
 
 
 def test_tool_entry_to_dict() -> None:
-    t = ToolEntry(name="cisco-ai-skill-scanner", version="2.0.9", mode="primary", sha="abc")
+    t = ToolEntry(name="cisco-ai-skill-scanner", version="2.0.11", mode="primary", sha="abc")
     d = t.to_dict()
     assert d["name"] == "cisco-ai-skill-scanner"
     assert d["sha"] == "abc"

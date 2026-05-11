@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-PINNED_VERSION="${PRUNER_CISCO_VERSION:-2.0.9}"
+PINNED_VERSION="${PRUNER_CISCO_VERSION:-2.0.11}"
 APACHE_MARKERS=(
     "Apache License"
     "Apache-2.0"

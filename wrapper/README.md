@@ -19,7 +19,7 @@ cd wrapper
 pip install -e ".[dev]"
 ```
 
-The Cisco engine is pinned to `cisco-ai-skill-scanner==2.0.9` and is auto-installed as a dependency. See [`CISCO_PIN.md`](./CISCO_PIN.md).
+The Cisco engine is pinned to `cisco-ai-skill-scanner==2.0.11` and is auto-installed as a dependency. See [`CISCO_PIN.md`](./CISCO_PIN.md).
 
 ## CLI
 
