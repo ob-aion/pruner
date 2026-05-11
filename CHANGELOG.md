@@ -1,8 +1,16 @@
 # Changelog
 
+## v0.2.12 - 11/05/2026
+
+Stylistic alignment of the Apache-2.0 appendix copyright line with the convention used across the public Coroboros workspace. The 0.2.11 release added the `–End of Time` signature but kept the bare `Copyright 2026–End of Time Coroboros` form; the rest of the workspace (`coroboros/archivist`, `coroboros/agent-skills`) carries `(c)` per the standard MIT template. This release brings Pruner into line. Apache-2.0 operative terms remain untouched.
+
+- **`LICENSE` — appendix copyright line: `Copyright 2026–End of Time Coroboros` → `Copyright (c) 2026–End of Time Coroboros`.** Single-character-class addition at line 190 inside the customary `APPENDIX: How to apply the Apache License to your work.` block. SPDX classification stays `Apache-2.0`; downstream license scanners read the boilerplate, not the appendix string.
+- **`.github/workflows/scan.yml` — synced to `ob-aion/pruner@0.2.12`** per the lockstep contract.
+- **Consumer-facing example pins bumped to `@0.2.12`.** `README.md:94`, `docs/consumer-integration.md` (three occurrences), `templates/workflow-minimal.yml:15`, `templates/workflow-full.yml:18`. Per the example-pin-moves-every-release convention established in 0.2.11.
+
 ## v0.2.11 - 11/05/2026
 
-Copyright-line alignment across the Coroboros workspace. The Pruner `LICENSE` carried the standard Apache-2.0 appendix copyright `Copyright 2026 Coroboros`, missing the `–End of Time` signature already in place on `coroboros/archivist`, `coroboros/agent-skills`, `coroboros/www`. This release adds the signature to the appendix only. Apache-2.0 operative terms (sections 1–9, lines 1–177) are untouched. SPDX classification stays `Apache-2.0` and downstream license scanners read the same boilerplate.
+Copyright-line alignment across the Coroboros workspace. The Pruner `LICENSE` carried the standard Apache-2.0 appendix copyright `Copyright 2026 Coroboros`, missing the `–End of Time` signature already in place on `coroboros/archivist` and `coroboros/agent-skills`. This release adds the signature to the appendix only. Apache-2.0 operative terms (sections 1–9, lines 1–177) are untouched. SPDX classification stays `Apache-2.0` and downstream license scanners read the same boilerplate.
 
 - **`LICENSE` — appendix copyright line: `Copyright 2026 Coroboros` → `Copyright 2026–End of Time Coroboros`.** Single-line edit at line 190 inside the customary `APPENDIX: How to apply the Apache License to your work.` block. No change to grant terms, redistribution conditions, patent grant, trademark clause, or warranty disclaimer.
 - **`.github/workflows/scan.yml` — synced to `ob-aion/pruner@0.2.11`** per the lockstep contract.
