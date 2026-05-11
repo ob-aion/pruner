@@ -67,7 +67,7 @@ def test_compose_invokes_and_writes(tmp_path: Path, repo_root: Path) -> None:
 def test_badge_writes_svg(tmp_path: Path) -> None:
     report = {
         "summary": {"grade": "A"},
-        "tools": [{"name": "cisco-ai-skill-scanner", "version": "2.0.9"}],
+        "tools": [{"name": "cisco-ai-skill-scanner", "version": "2.0.11"}],
     }
     rpath = tmp_path / "r.json"
     rpath.write_text(json.dumps(report), encoding="utf-8")

@@ -2,6 +2,93 @@
 
 Living document. Every release appends a dated section classifying any new findings against the canonical dogfood corpus.
 
+## 0.2.6 — 2026-05-11 (Cisco bump audit)
+
+Triggered by the Cisco engine bump `2.0.9 → 2.0.11`. Cisco `2.0.10` expanded the rule pack from 34 to 314 signatures (~10×). The audit confirms the bump introduces zero net detection drift on the canonical corpus.
+
+### Run metadata
+
+| Field | Value |
+|---|---|
+| Date | 2026-05-11 |
+| Pruner version | 0.2.6 |
+| Wrapper engine | `pruner-wrapper` 0.2.6 |
+| Cisco engine | `cisco-ai-skill-scanner` 2.0.11 |
+| Mode | `--without-cisco --rules rules/` (deterministic Coroboros pack only — same as 0.1.0 baseline) |
+| Threshold | `info` (every finding surfaced, none filtered out) |
+
+### Targets
+
+| Repo | HEAD SHA | Tracked files | Skill count | Δ skills vs 0.1.0 |
+|---|---|---|---|---|
+| `coroboros/agent-skills` | `ce19326ed0cec9ed25900fb21f49e581ae6b8f07` | 307 | 17 | +1 |
+| `anthropics/skills` | `f458cee31a7577a47ba0c9a101976fa599385174` | 393 | 18 | 0 |
+| `vercel-labs/agent-skills` | `b9c8ee0643d87d3c5a953d1e22382ff2ead39229` | 168 | 7 | 0 |
+
+### Aggregate
+
+| Classification | Count | Δ vs 0.1.0 |
+|---|---|---|
+| true-positive | 24 | +1 (new coroboros skill matches the FC003 pattern documented at 0.1.0) |
+| severity-inflation | 15 | 0 |
+| duplicate | 4 | 0 |
+| new-rule | 1 | +1 (PI-PERM-001 on `skills/design-system/SKILL.md` — rule added in 0.2.0, true positive) |
+| false-positive | 0 | 0 |
+| **Total** | **44** | **+2** |
+
+Both deltas trace to corpus and rule-pack evolution since 0.1.0, not to the Cisco bump. **Zero hard FPs preserved.**
+
+### Per-repo
+
+- **`coroboros/agent-skills` — 22 findings (was 20).** FC003 hits go from 16 to 17 (`skills/agent-creator/SKILL.md` is the new entry — same non-canonical top-level keys as the existing 16; `skills/scaffold` still contributes the FC001/FC002/FC004/FC005 duplicate cluster from a YAML parse failure). PI-PERM-001 fires once on `skills/design-system/SKILL.md` — the skill ships executable scripts (`scripts/audit-extensions.sh`) but `allowed-tools` does not declare `Bash`. True positive against the v0.2.0 cross-file matcher.
+- **`anthropics/skills` — 15 findings (unchanged).** Same FC005 ×15 cluster on `Commercial` / `Proprietary` license values. Severity-inflation, intentional non-SPDX surface. **Tracking note 2** (0.1.0) still applies.
+- **`vercel-labs/agent-skills` — 7 findings (unchanged).** Same FC004 ×7 hits — Vercel-convention `metadata.version`. **Tracking note 3** (0.1.0) still applies.
+
+### Cisco-bump parity check (out-of-table validation)
+
+Independently of the FP-audit table, both Cisco versions were run with `--with-cisco` on `coroboros-agent-skills` and `vercel-labs-agent-skills` to confirm the rule-pack expansion does not change detection behaviour on our corpora:
+
+| Corpus | Cisco 2.0.9 findings | Cisco 2.0.11 findings | Δ |
+|---|---|---|---|
+| `coroboros/agent-skills` | 22 (6 rule IDs: `ALLOWED_TOOLS_*_VIOLATION` ×18, `RESOURCE_ABUSE_INFINITE_LOOP` ×4) | 22 (same distribution) | **0** |
+| `vercel-labs/agent-skills` | 20 (8 rule IDs: `UNANALYZABLE_BINARY`, `BINARY_FILE_DETECTED`, `MANIFEST_MISSING_LICENSE`, `HIDDEN_DATA_FILE`, `HIDDEN_EXECUTABLE_SCRIPT`, `ARCHIVE_CONTAINS_EXECUTABLE`, `LOW_ANALYZABILITY`, `ARCHIVE_FILE_DETECTED`) | 20 (same distribution) | **0** |
+
+The 280 newly added Cisco rules do not fire on these corpora. Likely target patterns (advanced injection variants, ATR signatures) not present in well-formed skill repositories.
+
+### Open tracking notes (≤ 3 unresolved at release)
+
+Carried forward from 0.1.0 — no resolutions yet:
+
+1. **`coroboros/agent-skills` FC003 cluster.** Now 17 skills with non-canonical top-level frontmatter keys. Tracking; PR upstream pending.
+2. **FC005 vs. proprietary-license strings.** Anthropics non-SPDX licenses. No code change at 0.2.6.
+3. **`vercel-labs/agent-skills` `metadata.version` convention divergence.** Recommend `.pruner-policy.yml` opt-out for Vercel-pattern consumers. No code change at 0.2.6.
+
+Three notes total. Within the ≤ 3 cap defined in [`GOVERNANCE.md`](../GOVERNANCE.md#rule-pack-policy).
+
+### Reproduction
+
+```bash
+mkdir -p /tmp/pruner-dogfood
+git -C /tmp/pruner-dogfood clone --depth 1 https://github.com/coroboros/agent-skills.git coroboros-agent-skills
+git -C /tmp/pruner-dogfood clone --depth 1 https://github.com/anthropics/skills.git anthropics-skills
+git -C /tmp/pruner-dogfood clone --depth 1 https://github.com/vercel-labs/agent-skills.git vercel-labs-agent-skills
+
+for d in coroboros-agent-skills anthropics-skills vercel-labs-agent-skills; do
+    pruner scan "/tmp/pruner-dogfood/$d" \
+        --without-cisco \
+        --rules rules/ \
+        --severity-threshold info \
+        --format json \
+        --output "/tmp/pruner-dogfood/$d.report.json"
+done
+```
+
+For the Cisco-bump parity check, repeat with `--with-cisco` on each corpus once with the previous binary on PATH (`PATH=$(pipx environment --value PIPX_LOCAL_VENVS)/cisco-ai-skill-scanner-prev/bin:$PATH`) and once with the new binary, then `diff` the rule-id histograms.
+
+### Next audit
+
+`0.3.0` re-runs this corpus when the next Cisco bump or significant Coroboros pack expansion lands. Tracking notes carry forward until they resolve upstream or fold into the rules themselves.
+
 ## 0.1.0 — 2026-04-29 (initial audit)
 
 ### Run metadata

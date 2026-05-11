@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, cast
 
 CISCO_BINARY = "skill-scanner"
-PINNED_VERSION = "2.0.9"
+PINNED_VERSION = "2.0.11"
 
 
 def is_available() -> bool:

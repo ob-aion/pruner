@@ -98,7 +98,7 @@ def test_evaluate_required_scans_satisfied() -> None:
     from pruner_wrapper.types import Policy
 
     pol = Policy(name="x", required_scans=["cisco"])
-    tools = [ToolEntry(name="cisco-ai-skill-scanner", version="2.0.9", mode="primary")]
+    tools = [ToolEntry(name="cisco-ai-skill-scanner", version="2.0.11", mode="primary")]
     out = evaluate(pol, findings=[], allowlisted=[], tools=tools, score=100, target_paths=[])
     assert out["compliant"] is True
 
