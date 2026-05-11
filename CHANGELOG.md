@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.11 - 11/05/2026
+
+Copyright-line alignment across the Coroboros workspace. The Pruner `LICENSE` carried the standard Apache-2.0 appendix copyright `Copyright 2026 Coroboros`, missing the `–End of Time` signature already in place on `coroboros/archivist`, `coroboros/agent-skills`, `coroboros/www`. This release adds the signature to the appendix only. Apache-2.0 operative terms (sections 1–9, lines 1–177) are untouched. SPDX classification stays `Apache-2.0` and downstream license scanners read the same boilerplate.
+
+- **`LICENSE` — appendix copyright line: `Copyright 2026 Coroboros` → `Copyright 2026–End of Time Coroboros`.** Single-line edit at line 190 inside the customary `APPENDIX: How to apply the Apache License to your work.` block. No change to grant terms, redistribution conditions, patent grant, trademark clause, or warranty disclaimer.
+- **`.github/workflows/scan.yml` — synced to `ob-aion/pruner@0.2.11`** per the lockstep contract.
+- **Consumer-facing example pins bumped to `@0.2.11`.** `README.md:94`, `docs/consumer-integration.md` (three occurrences), `templates/workflow-minimal.yml:15`, `templates/workflow-full.yml:18`. Previously frozen at `@0.2.0` since the line cut; new convention going forward: example pins move every release so consumers reading the repo cold land on the latest tag.
+
 ## v0.2.10 - 11/05/2026
 
 Brand alignment with the other Coroboros subprojects. The Pruner repo shipped without an `assets/` folder at bootstrap (0.1.0) and the README opened on the title block with no Coroboros mark — a gap against `coroboros/archivist` and `coroboros/agent-skills` which both lead with the gold ouroboros at 288×288.
