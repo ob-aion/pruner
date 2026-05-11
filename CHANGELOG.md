@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.10 - 11/05/2026
+
+Brand alignment with the other Coroboros subprojects. The Pruner repo shipped without an `assets/` folder at bootstrap (0.1.0) and the README opened on the title block with no Coroboros mark — a gap against `coroboros/archivist` and `coroboros/agent-skills` which both lead with the gold ouroboros at 288×288.
+
+- **Added `assets/logo.png`** — copy of the canonical Coroboros mark used by `coroboros/archivist`, sourced from the shared Coroboros brand asset pool. 660×660 source PNG, 8-bit RGBA, ~84 kB.
+- **`README.md` opens on the logo.** `<img src="assets/logo.png" width="288" height="288" alt="Coroboros"/>` inserted inside the existing `<div align="center">` block, immediately above the `# Pruner` title. Matches the archivist README structure line-for-line for visual consistency in side-by-side browsing.
+- **`.github/workflows/scan.yml` synced to `ob-aion/pruner@0.2.10`** per the lockstep contract.
+
 ## v0.2.9 - 11/05/2026
 
 Composite action now uploads every SARIF artefact in the report bundle to GitHub Code Scanning, not just the Coroboros pack. The Phase β consumer integration surfaced the gap: 22 Cisco engine findings on `coroboros/agent-skills` lived in the workflow artefact bundle but never reached the Security tab, halving the visible signal for any consumer reviewing scan output through GitHub's first-party UI.
