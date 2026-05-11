@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.8 - 11/05/2026
+
+Bug fix on the composite action's pack-run step: `pruner scan` exits 1 by design when findings exist (informational signal, default `--fail-on=never`), but the `coroboros-pack-run` step propagated that exit code as a workflow failure. Consumers calling `scan.yml@0.2.7` against a repository with at least one skill finding hit the failure on the first PR. The bug stayed hidden across 0.1.0 to 0.2.7 because Pruner's own self-scan runs against a target with zero `SKILL.md` files — exit code stays at 0.
+
+- **`action.yml` — `coroboros-pack-run` masks `pruner scan` exit 1.** Same pattern as the `gate` step at the bottom of the action: `set -uo pipefail` (no `-e`), `|| EXIT=$?`, then `if [ "${EXIT}" -gt 1 ]; then exit "${EXIT}"; fi`. Exit 0 (no findings) and exit 1 (findings below threshold) thread through; exit 2 (above threshold) and exit 3 (internal error) still fail the workflow. Gating remains in the dedicated `gate` step.
+- **`action.yml` — Cisco fallback SARIF reflects the current pin.** The dummy SARIF written when `skill-scanner scan-all` produces no output now reports `version: "2.0.11"` to match `wrapper/CISCO_PIN.md`. Cosmetic; affects only the metadata block.
+- **`.github/workflows/scan.yml` — synced to `ob-aion/pruner@0.2.8`** per the lockstep contract reinstated in 0.2.7.
+
 ## v0.2.7 - 11/05/2026
 
 Catch-up release that syncs the `scan.yml` reusable workflow with the composite-action tag. The 0.2.3, 0.2.4, 0.2.5, and 0.2.6 releases left `.github/workflows/scan.yml:52` pinned to `ob-aion/pruner@0.2.2` — a documented bump step from 0.2.0 onwards that fell through over four consecutive releases. Consumers calling `uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.6` were therefore running the 0.2.2 composite action internally, missing the Cisco engine bump (2.0.9 → 2.0.11) that 0.2.6 shipped.

@@ -81,13 +81,19 @@ runs:
           --format sarif \
           --output-sarif "${{ inputs.report-output }}/cisco.sarif" || true
         if [ ! -s "${{ inputs.report-output }}/cisco.sarif" ]; then
-          echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"cisco-ai-skill-scanner","version":"2.0.9"}},"results":[]}]}' > "${{ inputs.report-output }}/cisco.sarif"
+          echo '{"version":"2.1.0","runs":[{"tool":{"driver":{"name":"cisco-ai-skill-scanner","version":"2.0.11"}},"results":[]}]}' > "${{ inputs.report-output }}/cisco.sarif"
         fi
 
     - id: coroboros-pack-run
       shell: bash
       run: |
-        set -euo pipefail
+        set -uo pipefail
+        # `pruner scan` exit codes per CLI spec:
+        #   0 = no findings; 1 = findings below threshold (informational);
+        #   2 = findings above threshold; 3 = internal error.
+        # The composite action threads exit 0 and 1 as pass — gating happens
+        # at the dedicated `gate` step below. Only 2 and 3 fail the workflow
+        # here, matching the gate-step contract.
         RULES_PATH='${{ inputs.rules-path }}'
         if [ -z "${RULES_PATH}" ]; then
           RULES_PATH="${GITHUB_ACTION_PATH}/rules"
@@ -105,7 +111,12 @@ runs:
           --skill-pattern "${{ inputs.skill-pattern }}" \
           "${ALLOWLIST_ARG[@]}" \
           "${POLICY_ARG[@]}" \
-          --target-repo "${GITHUB_REPOSITORY:-<local>}"
+          --target-repo "${GITHUB_REPOSITORY:-<local>}" \
+          || EXIT=$?
+        EXIT=${EXIT:-0}
+        if [ "${EXIT}" -gt 1 ]; then
+          exit "${EXIT}"
+        fi
 
     - id: gitleaks-run
       shell: bash
