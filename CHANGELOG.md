@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.7 - 11/05/2026
+
+Catch-up release that syncs the `scan.yml` reusable workflow with the composite-action tag. The 0.2.3, 0.2.4, 0.2.5, and 0.2.6 releases left `.github/workflows/scan.yml:52` pinned to `ob-aion/pruner@0.2.2` — a documented bump step from 0.2.0 onwards that fell through over four consecutive releases. Consumers calling `uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.6` were therefore running the 0.2.2 composite action internally, missing the Cisco engine bump (2.0.9 → 2.0.11) that 0.2.6 shipped.
+
+- **`.github/workflows/scan.yml` now references `ob-aion/pruner@0.2.7`.** The reusable workflow's `uses:` line moves in lockstep with the tag from this release forward. Consumers pinning `scan.yml@0.2.7` get the 0.2.7 composite action which embeds `cisco-ai-skill-scanner==2.0.11`, the v4.35.3 CodeQL upload-sarif action, and every other surface shipped in 0.2.3-0.2.6.
+
 ## v0.2.6 - 11/05/2026
 
 Cisco engine bump — first since 0.1.0. Replaces Dependabot PR #10 with the full `wrapper/CISCO_PIN.md` bump procedure (FP-audit corpus run, doc updates, dual-version parity check).
