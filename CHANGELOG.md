@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.5 - 11/05/2026
+
+CI dependency bump prompted by the Node.js 20 deprecation warning surfaced on every release run since 0.2.3.
+
+- **`github/codeql-action/upload-sarif` bumped from `3.35.2` to `4.35.3`.** Affects `.github/workflows/scorecard.yml` and `action.yml`. The v4 line runs on Node.js 24 (v3 is Node.js 20, slated for forced migration on 2026-06-02 and removal on 2026-09-16) and adds OIDC support for Cloudsmith / GCP private registries plus several bundle and bug fixes. No behaviour change for our SARIF-upload-only use case. New SHA pin `e46ed2cbd01164d986452f91f178727624ae40d7` confirmed as a real commit (not a tag object) by `scripts/verify-action-pins.sh`. Replaces Dependabot PR #11 — Dependabot left the `# v3` annotation on the SHA-bumped line; the proper `# v4.35.3` annotation matches the specificity of the rest of the repo's pin comments.
+
 ## v0.2.4 - 11/05/2026
 
 Fix to make the 0.2.3 backfill workflow runnable on the cosign 2.5+ release line.
