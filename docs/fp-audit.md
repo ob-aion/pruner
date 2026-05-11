@@ -40,13 +40,13 @@ Both deltas trace to corpus and rule-pack evolution since 0.1.0, not to the Cisc
 
 ### Per-repo
 
-- **`coroboros/agent-skills` — 22 findings (was 20).** FC003 hits go from 16 to 17 (`skills/agent-creator/SKILL.md` is the new entry — same non-canonical top-level keys as the existing 16; `skills/scaffold` still contributes the FC001/FC002/FC004/FC005 duplicate cluster from a YAML parse failure). PI-PERM-001 fires once on `skills/design-system/SKILL.md` — the skill ships executable scripts (`scripts/audit-extensions.sh`) but `allowed-tools` does not declare `Bash`. True positive against the v0.2.0 cross-file matcher.
+- **`coroboros/agent-skills` — 22 findings (was 20).** FC003 hits go from 16 to 17; the new entry `skills/agent-creator/SKILL.md` carries the same non-canonical top-level keys as the existing 16, and `skills/scaffold` still contributes the FC001/FC002/FC004/FC005 duplicate cluster from a YAML parse failure. PI-PERM-001 fires once on `skills/design-system/SKILL.md`: the skill ships executable scripts (`scripts/audit-extensions.sh`) but `allowed-tools` does not declare `Bash`. True positive against the v0.2.0 cross-file matcher.
 - **`anthropics/skills` — 15 findings (unchanged).** Same FC005 ×15 cluster on `Commercial` / `Proprietary` license values. Severity-inflation, intentional non-SPDX surface. **Tracking note 2** (0.1.0) still applies.
 - **`vercel-labs/agent-skills` — 7 findings (unchanged).** Same FC004 ×7 hits — Vercel-convention `metadata.version`. **Tracking note 3** (0.1.0) still applies.
 
 ### Cisco-bump parity check (out-of-table validation)
 
-Independently of the FP-audit table, both Cisco versions were run with `--with-cisco` on `coroboros-agent-skills` and `vercel-labs-agent-skills` to confirm the rule-pack expansion does not change detection behaviour on our corpora:
+Independently of the FP-audit table, both Cisco versions were run with `--with-cisco` on `coroboros-agent-skills` and `vercel-labs-agent-skills` to confirm the rule-pack expansion does not change detection behaviour on the corpora:
 
 | Corpus | Cisco 2.0.9 findings | Cisco 2.0.11 findings | Δ |
 |---|---|---|---|
