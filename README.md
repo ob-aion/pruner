@@ -91,7 +91,7 @@ permissions:
 
 jobs:
   audit:
-    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.11
+    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.12
     with:
       fail-on: medium
       skill-pattern: 'skills/*/SKILL.md'
