@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.4 - 11/05/2026
+
+Fix to make the 0.2.3 backfill workflow runnable on the cosign 2.5+ release line.
+
+- **`backfill-signatures.yml` switches to the cosign 2.5+ bundle format.** cosign 2.5 made `--bundle` mandatory and silently ignored the legacy `--output-signature` / `--output-certificate` flags, failing the workflow at `create bundle file: open : no such file or directory` on every dispatch against `0.1.3`, `0.2.0`, `0.2.1`. The fix produces a single `pruner-report.zip.sigstore` Sigstore Protobuf Bundle — signature plus Fulcio cert plus Rekor inclusion proof in one file. OpenSSF Scorecard's `releasesAreSigned` probe matches `.sigstore` in its `signatureExtensions` list at v5.3.0, so the Signed-Releases lift is identical to what the original `.sig` path intended.
+- **`docs/verify-a-report.md` updated to match.** `cosign verify-blob --bundle <…>.sigstore --new-bundle-format <…>` replaces the prior `--signature` plus `--certificate` flow. One asset to download, one cosign flag set.
+
 ## v0.2.3 - 11/05/2026
 
 Retroactive Signed-Releases lift for pre-0.2.2 releases. Ships the tooling; the backfill itself runs manually post-merge.
