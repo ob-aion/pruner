@@ -205,7 +205,12 @@ runs:
       uses: github/codeql-action/upload-sarif@e46ed2cbd01164d986452f91f178727624ae40d7  # v4.35.3
       if: ${{ always() }}
       with:
-        sarif_file: ${{ inputs.report-output }}/coroboros.sarif
+        # Directory upload — every `*.sarif` and `*.sarif.json` inside is sent
+        # to Code Scanning under its own tool category. Captures the Coroboros
+        # pack (`coroboros.sarif`), the Cisco engine (`cisco.sarif`), gitleaks
+        # (`gitleaks.sarif`), and Snyk when opted in (`snyk.sarif`). The
+        # `actionlint.json` file uses a different extension and is skipped.
+        sarif_file: ${{ inputs.report-output }}
 
     - id: gate
       shell: bash

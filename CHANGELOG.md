@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.9 - 11/05/2026
+
+Composite action now uploads every SARIF artefact in the report bundle to GitHub Code Scanning, not just the Coroboros pack. The Phase β consumer integration surfaced the gap: 22 Cisco engine findings on `coroboros/agent-skills` lived in the workflow artefact bundle but never reached the Security tab, halving the visible signal for any consumer reviewing scan output through GitHub's first-party UI.
+
+- **`action.yml` — `upload-sarif` step targets the report directory.** `sarif_file` now points to `${{ inputs.report-output }}` rather than a single file path. `github/codeql-action/upload-sarif@v4.35.3` walks the directory, picks up every `*.sarif` and `*.sarif.json`, and uploads each under its own tool category. Captures `coroboros.sarif` (pack), `cisco.sarif` (Cisco engine, the 280-rule expansion since 0.2.6), `gitleaks.sarif` (secrets), and `snyk.sarif` when opted in. The `actionlint.json` file ends in `.json` rather than `.sarif.json` and is silently skipped — actionlint findings stay in the bundle for download but do not surface in the Security tab. Three Code Scanning categories appear on a default Pruner run; four when `with-snyk: true` and the secret is set.
+- **`.github/workflows/scan.yml` — synced to `ob-aion/pruner@0.2.9`** per the lockstep contract restored in 0.2.7.
+
 ## v0.2.8 - 11/05/2026
 
 Bug fix on the composite action's pack-run step: `pruner scan` exits 1 by design when findings exist (informational signal, default `--fail-on=never`), but the `coroboros-pack-run` step propagated that exit code as a workflow failure. Consumers calling `scan.yml@0.2.7` against a repository with at least one skill finding hit the failure on the first PR. The bug stayed hidden across 0.1.0 to 0.2.7 because Pruner's own self-scan runs against a target with zero `SKILL.md` files — exit code stays at 0.
