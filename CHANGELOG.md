@@ -5,6 +5,7 @@
 Copyright-line alignment across the Coroboros workspace. The Pruner `LICENSE` carried the standard Apache-2.0 appendix copyright `Copyright 2026 Coroboros`, missing the `–End of Time` signature already in place on `coroboros/archivist`, `coroboros/agent-skills`, `coroboros/www`. This release adds the signature to the appendix only. Apache-2.0 operative terms (sections 1–9, lines 1–177) are untouched. SPDX classification stays `Apache-2.0` and downstream license scanners read the same boilerplate.
 
 - **`LICENSE` — appendix copyright line: `Copyright 2026 Coroboros` → `Copyright 2026–End of Time Coroboros`.** Single-line edit at line 190 inside the customary `APPENDIX: How to apply the Apache License to your work.` block. No change to grant terms, redistribution conditions, patent grant, trademark clause, or warranty disclaimer.
+- **`.github/workflows/scan.yml` — synced to `ob-aion/pruner@0.2.11`** per the lockstep contract.
 
 ## v0.2.10 - 11/05/2026
 
