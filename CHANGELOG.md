@@ -6,6 +6,7 @@ Copyright-line alignment across the Coroboros workspace. The Pruner `LICENSE` ca
 
 - **`LICENSE` — appendix copyright line: `Copyright 2026 Coroboros` → `Copyright 2026–End of Time Coroboros`.** Single-line edit at line 190 inside the customary `APPENDIX: How to apply the Apache License to your work.` block. No change to grant terms, redistribution conditions, patent grant, trademark clause, or warranty disclaimer.
 - **`.github/workflows/scan.yml` — synced to `ob-aion/pruner@0.2.11`** per the lockstep contract.
+- **Consumer-facing example pins bumped to `@0.2.11`.** `README.md:94`, `docs/consumer-integration.md` (three occurrences), `templates/workflow-minimal.yml:15`, `templates/workflow-full.yml:18`. Previously frozen at `@0.2.0` since the line cut; new convention going forward: example pins move every release so consumers reading the repo cold land on the latest tag.
 
 ## v0.2.10 - 11/05/2026
 
