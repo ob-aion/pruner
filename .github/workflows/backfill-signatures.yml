@@ -54,11 +54,10 @@ jobs:
         run: |
           set -euo pipefail
           cosign sign-blob --yes \
-            --output-signature pruner-report.zip.sig \
-            --output-certificate pruner-report.zip.pem \
+            --bundle pruner-report.zip.sigstore \
             pruner-report.zip
 
-      - name: Upload signature assets to release
+      - name: Upload signature asset to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_TAG: ${{ inputs.tag }}
@@ -68,5 +67,4 @@ jobs:
           gh release upload "${INPUT_TAG}" \
             --repo "${GITHUB_REPOSITORY}" \
             --clobber \
-            ./.backfill/pruner-report.zip.sig \
-            ./.backfill/pruner-report.zip.pem
+            ./.backfill/pruner-report.zip.sigstore

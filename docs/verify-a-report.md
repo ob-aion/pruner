@@ -83,17 +83,16 @@ This is the trust signal. **Do not trust an unverifiable report.** Treat it as i
 
 ## Verifying backfilled releases (pre-0.2.2)
 
-Releases tagged before `0.2.2` predate the in-toto attestation pipeline. They carry detached cosign signatures backfilled retroactively via `.github/workflows/backfill-signatures.yml`. Verify with `cosign` rather than `gh attestation`:
+Releases tagged before `0.2.2` predate the in-toto attestation pipeline. They carry a detached cosign Sigstore Bundle backfilled retroactively via `.github/workflows/backfill-signatures.yml`. Verify with `cosign` rather than `gh attestation`:
 
 ```bash
 gh release download <tag> --repo <owner>/<repo> \
   --pattern 'pruner-report.zip' \
-  --pattern 'pruner-report.zip.sig' \
-  --pattern 'pruner-report.zip.pem'
+  --pattern 'pruner-report.zip.sigstore'
 
 cosign verify-blob \
-  --signature pruner-report.zip.sig \
-  --certificate pruner-report.zip.pem \
+  --bundle pruner-report.zip.sigstore \
+  --new-bundle-format \
   --certificate-identity 'https://github.com/<owner>/<repo>/.github/workflows/backfill-signatures.yml@refs/heads/main' \
   --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
   pruner-report.zip
