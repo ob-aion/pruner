@@ -80,3 +80,23 @@ unzip -p pruner-report.zip report-v1.json | jq '.findings[] | {id, severity_effe
 - Sigstore certificate expired or not from the expected issuer.
 
 This is the trust signal. **Do not trust an unverifiable report.** Treat it as if Pruner had not run.
+
+## Verifying backfilled releases (pre-0.2.2)
+
+Releases tagged before `0.2.2` predate the in-toto attestation pipeline. They carry detached cosign signatures backfilled retroactively via `.github/workflows/backfill-signatures.yml`. Verify with `cosign` rather than `gh attestation`:
+
+```bash
+gh release download <tag> --repo <owner>/<repo> \
+  --pattern 'pruner-report.zip' \
+  --pattern 'pruner-report.zip.sig' \
+  --pattern 'pruner-report.zip.pem'
+
+cosign verify-blob \
+  --signature pruner-report.zip.sig \
+  --certificate pruner-report.zip.pem \
+  --certificate-identity 'https://github.com/<owner>/<repo>/.github/workflows/backfill-signatures.yml@refs/heads/main' \
+  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
+  pruner-report.zip
+```
+
+A successful verification proves the bytes match a Rekor-logged signature issued by the named workflow. The Rekor entry's timestamp marks when the backfill ran, not the original release date — pre-0.2.2 artefacts are signed retroactively and that fact is intentionally visible in the transparency log.

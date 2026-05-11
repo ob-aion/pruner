@@ -1,0 +1,72 @@
+name: backfill-signatures
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to backfill (bare SemVer, e.g. 0.2.1)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # gh release upload of signature companions
+      id-token: write       # OIDC token for Sigstore Fulcio keyless signing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Validate tag input
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! [[ "${INPUT_TAG}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::tag must be bare SemVer (e.g. 0.1.0); got '${INPUT_TAG}'"
+            exit 1
+          fi
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6  # v4.1.2
+
+      - name: Download release artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ./.backfill
+          gh release download "${INPUT_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern 'pruner-report.zip' \
+            --dir ./.backfill
+
+      - name: Sign artifact with cosign keyless
+        working-directory: ./.backfill
+        shell: bash
+        run: |
+          set -euo pipefail
+          cosign sign-blob --yes \
+            --output-signature pruner-report.zip.sig \
+            --output-certificate pruner-report.zip.pem \
+            pruner-report.zip
+
+      - name: Upload signature assets to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release upload "${INPUT_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber \
+            ./.backfill/pruner-report.zip.sig \
+            ./.backfill/pruner-report.zip.pem

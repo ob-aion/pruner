@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.3 - 11/05/2026
+
+Retroactive Signed-Releases lift for pre-0.2.2 releases. Ships the tooling; the backfill itself runs manually post-merge.
+
+- **Added `.github/workflows/backfill-signatures.yml`.** A `workflow_dispatch`-only workflow that downloads `pruner-report.zip` from a named release, signs the bytes with cosign keyless (Fulcio OIDC + Rekor transparency log), and uploads `pruner-report.zip.sig` + `pruner-report.zip.pem` companions back to the release. OpenSSF Scorecard's Signed-Releases check samples the last five releases and recognises `.sig`/`.asc`/`.minisig`/`.sign`/`.intoto.jsonl` extensions; pre-0.2.2 releases shipped none of these, so the cumulative ratio kept Signed-Releases at 2/10 even after 0.2.2's in-toto bundles. The backfill adds the missing signature extensions without modifying or re-publishing the original `pruner-report.zip` bytes.
+- **`docs/verify-a-report.md` documents the two signature classes.** In-toto build provenance for 0.2.2+ (attests origin + builder + commit, verifiable via `gh attestation verify`) and detached cosign signatures for backfilled pre-0.2.2 releases (attests bytes only, retroactive, verifiable via `cosign verify-blob`). Both anchor to public-good Sigstore; the Rekor entry timestamps the backfill, not the original release.
+- **Operator runbook.** Once this PR merges and 0.2.3 is tagged, run `gh workflow run backfill-signatures.yml -f tag=0.1.3` (and `0.2.0`, `0.2.1`) from the default branch. With four cosign-signed pre-0.2.2 assets plus the 0.2.2 and 0.2.3 in-toto bundles, the last-five-releases sample reaches 5/5 signed — Signed-Releases lifts to 10/10 on the next Scorecard cron.
+
 ## v0.2.2 - 30/04/2026
 
 Lifts the third remaining Scorecard finding from the 0.2.1 baseline: Signed-Releases.
