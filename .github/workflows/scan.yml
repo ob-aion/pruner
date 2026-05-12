@@ -48,12 +48,8 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
-      # Self-checkout the Pruner composite action at the same SHA this
-      # reusable workflow file was loaded from. Eliminates the lockstep manual
-      # bump that was the 0.2.7 bug class. GHA does not support expressions in
-      # `uses:` action refs (actions/runner#1493, closed without
-      # implementation); `uses: ./<path>` after a path-aware checkout is the
-      # canonical workaround — same pattern actions/checkout uses to self-test.
+      # Self-checkout at github.workflow_sha keeps the composite version-coherent
+      # without a literal pin. GHA forbids expressions in `uses:` action refs.
       - id: self-ref
         shell: bash
         env:

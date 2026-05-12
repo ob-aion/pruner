@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
-# Verify every SHA-pinned `uses:` line in this repo's workflows and the
-# composite action resolves to a real commit in the upstream repository.
-#
-# OpenSSF Scorecard's webapp validates that pinned SHAs are real commits
-# and rejects annotated-tag-object SHAs with a 400 / "imposter commit"
-# error. Pinning to commit SHAs is the only stable form. See
-# docs/sha-pinning.md for the gotcha and how to resolve a tag-object to
-# its underlying commit.
-#
-# Usage: bash scripts/verify-action-pins.sh
-# Exit codes: 0 = all pins resolve to commits; 1 = bad pin; 2 = missing gh.
+# Verify every SHA-pinned `uses:` line resolves to a real commit, not a
+# tag-object SHA — Scorecard rejects the latter as "imposter commit".
+# See docs/sha-pinning.md. Exit: 0 = OK, 1 = bad pin, 2 = missing gh.
 
 set -euo pipefail
 
