@@ -5,9 +5,11 @@
 <!-- omit in toc -->
 # Pruner
 
-**Variants don't ship. Signal does.**
+**Sigstore-signed attestations for AI agent skills.**
 
-Coroboros's attestation chain for agent skill repositories.
+*Variants don't ship. Signal does.*
+
+The agent-skills supply chain is the next attack surface. Pruner produces a portable, signed trust artefact that travels with every release tag.
 
 [![latest](https://img.shields.io/github/v/release/ob-aion/pruner?style=flat-square&label=latest&color=000000)](https://github.com/ob-aion/pruner/releases)
 [![self-scan](https://img.shields.io/github/actions/workflow/status/ob-aion/pruner/self-scan.yml?branch=main&style=flat-square&label=self-scan&color=000000)](https://github.com/ob-aion/pruner/actions/workflows/self-scan.yml)
@@ -21,11 +23,11 @@ Coroboros's attestation chain for agent skill repositories.
 
 `Detection: cisco-ai-skill-scanner. Policy: coroboros. Signature: Sigstore.`
 
-- [Why now](#why-now)
 - [What Pruner is](#what-pruner-is)
 - [Why a wrapper, not another scanner](#why-a-wrapper-not-another-scanner)
 - [Code inside skills](#code-inside-skills)
 - [What Pruner is not](#what-pruner-is-not)
+- [Why now](#why-now)
 - [Quick start](#quick-start)
 - [Compared to](#compared-to)
 - [Reports and verification](#reports-and-verification)
@@ -34,12 +36,6 @@ Coroboros's attestation chain for agent skill repositories.
 - [Vision](#vision)
 - [Governance](#governance)
 - [License](#license)
-
-## Why now
-
-The agent-skills ecosystem moved from launch (October 2025) to "registry already poisoned at scale" in four months. Snyk's ToxicSkills audit (February 2026) found 36.82 % of 3,984 scanned skills carrying security flaws and 13.4 % critical issues. The ClawHavoc campaign (Antiy CERT, Koi Security, January–February 2026) placed 1,184 malicious skills across the ecosystem with single-IP C2. Cato CTRL weaponised Anthropic's official `slack-gif-creator` skill in December 2025. Minor edits triggered a remote-fetch-and-execute that delivered MedusaLocker — under a single user-consent trust model.
-
-Vendor responsibility lands on the user. Anthropic states explicitly: *"It is the user's responsibility to only use and execute trusted Skills."* Skills.sh runs a server-side audit at install through the CLI. A direct `git clone` bypasses it entirely. Once a skill is installed, drift is not re-scanned. The trust signal needs to live where the audit happens — at source, before publication.
 
 ## What Pruner is
 
@@ -70,9 +66,15 @@ The Coroboros pack adds patterns Cisco does not surface as discrete rules. Codep
 - **Not a live red-team tool.** Probing a deployed agent with adversarial prompts is the job of [NVIDIA garak](https://github.com/NVIDIA/garak), [promptfoo](https://github.com/promptfoo/promptfoo), or [Microsoft PyRIT](https://github.com/Azure/PyRIT). Those tools require a runnable agent endpoint; many skill repos ship none.
 - **Not a proprietary cloud-uplinked engine.** Cisco runs fully local; Pruner runs fully offline by default. [`snyk/agent-scan`](https://github.com/snyk/agent-scan) is a strong scanner but requires `SNYK_TOKEN` and uplinks scan content to Snyk cloud — incompatible with air-gapped or regulated workflows. Pruner accepts it as an opt-in second opinion (see [Snyk second opinion](#snyk-second-opinion)).
 
+## Why now
+
+The agent-skills ecosystem moved from launch (October 2025) to "registry already poisoned at scale" in four months. Snyk's ToxicSkills audit (February 2026) found 36.82 % of 3,984 scanned skills carrying security flaws and 13.4 % critical issues. The ClawHavoc campaign (Antiy CERT, Koi Security, January–February 2026) placed 1,184 malicious skills across the ecosystem with single-IP C2. Cato CTRL weaponised Anthropic's official `slack-gif-creator` skill in December 2025. Minor edits triggered a remote-fetch-and-execute that delivered MedusaLocker — under a single user-consent trust model.
+
+Vendor responsibility lands on the user. Anthropic states explicitly: *"It is the user's responsibility to only use and execute trusted Skills."* Skills.sh runs a server-side audit at install through the CLI. A direct `git clone` bypasses it entirely. Once a skill is installed, drift is not re-scanned. The trust signal needs to live where the audit happens — at source, before publication.
+
 ## Quick start
 
-Drop this into `.github/workflows/pruner.yml`:
+Drop this into `.github/workflows/pruner.yml`. Replace `<VERSION>` with the latest tag from <https://github.com/ob-aion/pruner/releases/latest> (the `latest` badge at the top of this page points at the same place).
 
 ```yaml
 name: Pruner
@@ -91,7 +93,7 @@ permissions:
 
 jobs:
   audit:
-    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.12
+    uses: ob-aion/pruner/.github/workflows/scan.yml@<VERSION>
     with:
       fail-on: medium
       skill-pattern: 'skills/*/SKILL.md'

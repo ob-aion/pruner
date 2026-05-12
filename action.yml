@@ -88,12 +88,8 @@ runs:
       shell: bash
       run: |
         set -uo pipefail
-        # `pruner scan` exit codes per CLI spec:
-        #   0 = no findings; 1 = findings below threshold (informational);
-        #   2 = findings above threshold; 3 = internal error.
-        # The composite action threads exit 0 and 1 as pass — gating happens
-        # at the dedicated `gate` step below. Only 2 and 3 fail the workflow
-        # here, matching the gate-step contract.
+        # pruner scan exit 1 is informational (findings below threshold); only
+        # exit 2 and 3 fail. Gating happens at the `gate` step.
         RULES_PATH='${{ inputs.rules-path }}'
         if [ -z "${RULES_PATH}" ]; then
           RULES_PATH="${GITHUB_ACTION_PATH}/rules"
@@ -205,23 +201,15 @@ runs:
       uses: github/codeql-action/upload-sarif@e46ed2cbd01164d986452f91f178727624ae40d7  # v4.35.3
       if: ${{ always() }}
       with:
-        # Directory upload — every `*.sarif` and `*.sarif.json` inside is sent
-        # to Code Scanning under its own tool category. Captures the Coroboros
-        # pack (`coroboros.sarif`), the Cisco engine (`cisco.sarif`), gitleaks
-        # (`gitleaks.sarif`), and Snyk when opted in (`snyk.sarif`). The
-        # `actionlint.json` file uses a different extension and is skipped.
+        # Directory upload — every *.sarif inside ships to Code Scanning under
+        # its own tool category. actionlint.json is skipped (wrong extension).
         sarif_file: ${{ inputs.report-output }}
 
     - id: gate
       shell: bash
       run: |
         set -uo pipefail
-        # `pruner gate` exit codes per CLI spec:
-        #   0 = no findings; 1 = findings below threshold (informational);
-        #   2 = findings above threshold; 3 = internal error.
-        # Only 2 and 3 are workflow failures — exit 1 means the gate
-        # threshold was respected, even though some lower-severity findings
-        # exist in the bundle.
+        # Same exit-code contract as the scan step: only 2 and 3 fail.
         pruner gate \
           --report "${{ inputs.report-output }}/report.json" \
           --fail-on "${{ inputs.fail-on }}" || EXIT=$?

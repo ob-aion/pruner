@@ -48,8 +48,33 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
+      # Self-checkout at github.workflow_sha keeps the composite version-coherent
+      # without a literal pin. GHA forbids expressions in `uses:` action refs.
+      - id: self-ref
+        shell: bash
+        env:
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          FALLBACK_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          REPO=""
+          if [[ -n "${WORKFLOW_REF}" && "${WORKFLOW_REF}" == */.github/* ]]; then
+            REPO="${WORKFLOW_REF%%/.github/*}"
+          fi
+          if [[ -z "${REPO}" ]]; then
+            REPO="${FALLBACK_REPOSITORY}"
+          fi
+          echo "repo=${REPO}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          repository: ${{ steps.self-ref.outputs.repo }}
+          ref: ${{ github.workflow_sha }}
+          path: .pruner-action
+          persist-credentials: false
+
       - id: scan
-        uses: ob-aion/pruner@0.2.12
+        uses: ./.pruner-action
         with:
           fail-on: ${{ inputs.fail-on }}
           skill-pattern: ${{ inputs.skill-pattern }}
