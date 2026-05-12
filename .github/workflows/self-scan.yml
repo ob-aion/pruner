@@ -31,3 +31,23 @@ jobs:
           name: pruner-self-scan-report
           path: .pruner/
           retention-days: 14
+
+  # Composite-action invocation against a fixture that trips findings strictly
+  # below `critical`. Green outcome asserts `pruner scan` exit 1 threads through
+  # `coroboros-pack-run` and the gate step without being masked as a workflow
+  # failure — the 0.2.8 bug class. The `pruner-self-scan` job above scans `.`
+  # which holds zero `SKILL.md` files and never exits 1 (the blind spot).
+  pruner-finding-positive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - id: scan
+        uses: ./
+        with:
+          fail-on: critical
+          target-path: examples/finding-positive-skill
+          skill-pattern: SKILL.md
+          report-output: ./.pruner-finding-positive
