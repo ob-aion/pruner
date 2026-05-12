@@ -74,7 +74,7 @@ Vendor responsibility lands on the user. Anthropic states explicitly: *"It is th
 
 ## Quick start
 
-Drop this into `.github/workflows/pruner.yml`:
+Drop this into `.github/workflows/pruner.yml`. Replace `<VERSION>` with the latest tag from <https://github.com/ob-aion/pruner/releases/latest> (the `latest` badge at the top of this page points at the same place).
 
 ```yaml
 name: Pruner
@@ -93,7 +93,7 @@ permissions:
 
 jobs:
   audit:
-    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.13
+    uses: ob-aion/pruner/.github/workflows/scan.yml@<VERSION>
     with:
       fail-on: medium
       skill-pattern: 'skills/*/SKILL.md'

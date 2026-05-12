@@ -1,0 +1,25 @@
+name: test-scan-yml
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+  attestations: write
+
+# Validates the reusable workflow end-to-end against examples/benign-skill on
+# every PR. `self-scan.yml` invokes `uses: ./` directly and bypasses
+# `scan.yml` entirely, which is precisely why the 0.2.7 lockstep-skip bug hid
+# for four releases. This job calls `scan.yml` from the PR branch so any
+# regression in its structural pattern (self-ref parsing, self-checkout,
+# `./.pruner-action` invocation) surfaces before merge.
+jobs:
+  benign-target:
+    name: scan.yml against examples/benign-skill
+    uses: ./.github/workflows/scan.yml
+    with:
+      fail-on: critical
+      target-path: examples/benign-skill
+      skill-pattern: SKILL.md
+      report-output: ./.pruner-test

@@ -48,8 +48,37 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
+      # Self-checkout the Pruner composite action at the same SHA this
+      # reusable workflow file was loaded from. Eliminates the lockstep manual
+      # bump that was the 0.2.7 bug class. GHA does not support expressions in
+      # `uses:` action refs (actions/runner#1493, closed without
+      # implementation); `uses: ./<path>` after a path-aware checkout is the
+      # canonical workaround — same pattern actions/checkout uses to self-test.
+      - id: self-ref
+        shell: bash
+        env:
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          FALLBACK_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          REPO=""
+          if [[ -n "${WORKFLOW_REF}" && "${WORKFLOW_REF}" == */.github/* ]]; then
+            REPO="${WORKFLOW_REF%%/.github/*}"
+          fi
+          if [[ -z "${REPO}" ]]; then
+            REPO="${FALLBACK_REPOSITORY}"
+          fi
+          echo "repo=${REPO}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          repository: ${{ steps.self-ref.outputs.repo }}
+          ref: ${{ github.workflow_sha }}
+          path: .pruner-action
+          persist-credentials: false
+
       - id: scan
-        uses: ob-aion/pruner@0.2.13
+        uses: ./.pruner-action
         with:
           fail-on: ${{ inputs.fail-on }}
           skill-pattern: ${{ inputs.skill-pattern }}

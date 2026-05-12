@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   audit:
-    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.13
+    # Replace <VERSION> with the latest tag from https://github.com/ob-aion/pruner/releases/latest
+    uses: ob-aion/pruner/.github/workflows/scan.yml@<VERSION>
     with:
       fail-on: critical
