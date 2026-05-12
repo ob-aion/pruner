@@ -38,3 +38,33 @@ bash scripts/verify-action-pins.sh
 ```
 
 Dependabot itself resolves to commit SHAs correctly when it opens a bump PR, so the bug class is mostly introduced by manual pins. The pre-flight catches both paths.
+
+## Pre-tag lockstep check
+
+The same script gates one more invariant when `EXPECTED_RELEASE_TAG` is set in its environment. `.github/workflows/scan.yml` self-references the composite via `uses: ob-aion/pruner@<X.Y.Z>`. That literal must match the tag being cut, or consumers pinning `scan.yml@<X.Y.Z>` end up running an earlier composite internally (the 0.2.7 bug class — four consecutive releases shipped out of lockstep).
+
+`release.yml` resolves the tag first and exports it to the verifier:
+
+```yaml
+- name: Resolve tag
+  id: tag
+  shell: bash
+  run: |
+    REF="${GITHUB_REF#refs/tags/}"
+    echo "tag=${REF}" >> "$GITHUB_OUTPUT"
+
+- name: Verify action SHA pins and scan.yml lockstep
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    EXPECTED_RELEASE_TAG: ${{ steps.tag.outputs.tag }}
+  shell: bash
+  run: bash scripts/verify-action-pins.sh
+```
+
+Local invocation before tagging:
+
+```bash
+EXPECTED_RELEASE_TAG=0.2.15 bash scripts/verify-action-pins.sh
+```
+
+Exit codes: `0` OK, `1` bad SHA pin or lockstep mismatch, `2` missing `gh` CLI or missing `scan.yml`. Running the script without the env var keeps the SHA-only behaviour — useful for routine Dependabot review.

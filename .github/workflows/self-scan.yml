@@ -32,11 +32,12 @@ jobs:
           path: .pruner/
           retention-days: 14
 
-  # Composite-action invocation against a fixture that trips findings strictly
-  # below `critical`. Green outcome asserts `pruner scan` exit 1 threads through
-  # `coroboros-pack-run` and the gate step without being masked as a workflow
-  # failure — the 0.2.8 bug class. The `pruner-self-scan` job above scans `.`
-  # which holds zero `SKILL.md` files and never exits 1 (the blind spot).
+  # Fixture job. Trips sub-critical findings; green outcome asserts
+  # `pruner scan` exit 1 threads through `coroboros-pack-run` and the gate
+  # step without being masked as a workflow failure (0.2.8 bug class).
+  # The `pruner-self-scan` job above scans `.` with `.pruner-ignore.yml`
+  # applied — every Pruner-side fixture finding sits in the allowlist, so
+  # `pruner scan` exits 0 and the propagation contract goes untested there.
   pruner-finding-positive:
     runs-on: ubuntu-latest
     permissions:
