@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.13 - 12/05/2026
+
+Phase γ first item: README headline reposition. The previous opener — `**Variants don't ship. Signal does.**`, a `Coroboros's attestation chain for agent skill repositories.` description, and a four-month threat-surface introduction — read well for someone arriving with context but underdelivered as the elevator pitch a fresh reader sees first. The new headline lands the category (`Sigstore-signed attestations`), the surface (`AI agent skills`), and the urgency in one sentence; the threat-surface paragraph moves further down the page as supporting context. Phase β closed yesterday on two clean `coroboros/agent-skills` release cycles (1.18.0 on 2026-05-11 and 1.18.1 on 2026-05-12, `pruner / pruner` green on both), and the headline is what travels in link previews — load-bearing for any Phase γ outreach (HackerNews, Lobste.rs, OpenSSF, blog on `coroboros.com`).
+
+- **`README.md` — headline reposition.** New bold opener `**Sigstore-signed attestations for AI agent skills.**`; the brand DNA `Variants don't ship. Signal does.` is preserved as the italic kicker; one-sentence pitch lands the urgency — `The agent-skills supply chain is the next attack surface. Pruner produces a portable, signed trust artefact that travels with every release tag.` Replaces the prior tagline + description block at the top of the centred div.
+- **`README.md` — `## Why now` moved down.** From first body section to between `## What Pruner is not` and `## Quick start`. The threat-surface paragraph now reads as supporting context after the orientation arc (`What Pruner is` → `Why a wrapper` → `Code inside skills` → `What Pruner is not`). TOC reordered to match.
+- **`.github/workflows/scan.yml` synced to `ob-aion/pruner@0.2.13`** per the lockstep contract.
+- **Consumer-facing example pins bumped to `@0.2.13`.** `README.md`, `docs/consumer-integration.md` (three occurrences), `templates/workflow-minimal.yml`, `templates/workflow-full.yml`. Per the example-pin-moves-every-release convention established in 0.2.11.
+
 ## v0.2.12 - 11/05/2026
 
 Stylistic alignment of the Apache-2.0 appendix copyright line with the convention used across the public Coroboros workspace. The 0.2.11 release added the `–End of Time` signature but kept the bare `Copyright 2026–End of Time Coroboros` form; the rest of the workspace (`coroboros/archivist`, `coroboros/agent-skills`) carries `(c)` per the standard MIT template. This release brings Pruner into line. Apache-2.0 operative terms remain untouched.

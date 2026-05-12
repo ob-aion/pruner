@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   audit:
-    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.12
+    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.13
     with:
       fail-on: medium
       skill-pattern: 'skills/*/SKILL.md'
@@ -108,7 +108,7 @@ Snyk uplinks scan content to its cloud — incompatible with Pruner's air-gap de
 ```yaml
 jobs:
   audit:
-    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.12
+    uses: ob-aion/pruner/.github/workflows/scan.yml@0.2.13
     with:
       fail-on: medium
       with-snyk: true
@@ -134,7 +134,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - run: npm install -g snyk
-      - uses: ob-aion/pruner@0.2.12
+      - uses: ob-aion/pruner@0.2.13
         with:
           fail-on: medium
           with-snyk: true
