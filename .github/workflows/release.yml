@@ -25,12 +25,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify action SHA pins are commits
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-        run: bash scripts/verify-action-pins.sh
-
       - name: Resolve tag
         id: tag
         shell: bash
@@ -42,6 +36,13 @@ jobs:
             REF="${{ github.event.inputs.tag }}"
           fi
           echo "tag=${REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify action SHA pins and scan.yml lockstep
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPECTED_RELEASE_TAG: ${{ steps.tag.outputs.tag }}
+        shell: bash
+        run: bash scripts/verify-action-pins.sh
 
       - name: Self-scan against the tagged ref
         id: scan

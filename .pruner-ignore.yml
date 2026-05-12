@@ -58,3 +58,25 @@ ignores:
   - rule: PI-PERM-001
     path: examples/vulnerable-skill/SKILL.md
     justification: "Intentional vulnerable-skill fixture — allowed-tools mismatch with sibling scripts demonstrates PI-PERM-001."
+
+  # finding-positive-skill — intentional fixture. The path-rooted entries below
+  # suppress the findings in `pruner-self-scan` (target-path: `.`, paths land as
+  # `examples/finding-positive-skill/SKILL.md`). The `pruner-finding-positive`
+  # job scans `examples/finding-positive-skill` directly, so finding paths are
+  # bare `SKILL.md` and the entries do not match — findings fire there, exit-code
+  # propagation gets exercised.
+  - rule: FC001
+    path: examples/finding-positive-skill/SKILL.md
+    justification: "Intentional finding-positive-skill fixture — non-kebab-case name trips FC001 to keep `pruner scan` exit 1 wired through `coroboros-pack-run`."
+
+  - rule: FC003
+    path: examples/finding-positive-skill/SKILL.md
+    justification: "Intentional finding-positive-skill fixture — top-level `custom_field` trips FC003 for the same exit-code-propagation purpose."
+
+  - rule: FC004
+    path: examples/finding-positive-skill/SKILL.md
+    justification: "Intentional finding-positive-skill fixture — `metadata.version` trips FC004 for the same exit-code-propagation purpose."
+
+  - rule: FC005
+    path: examples/finding-positive-skill/SKILL.md
+    justification: "Intentional finding-positive-skill fixture — non-SPDX license string trips FC005 for the same exit-code-propagation purpose."
